@@ -4,3 +4,20 @@ This is a project that manages data from Evaluation Centers (Centros Evaluadores
 
 In the future, i will launch to a server and add more components. 
 
+## Software Architecture 
+
+<p align="center">
+  <img src="/documentation/software architecture diagram.png" alt="Description" width="1000">
+</p>
+
+## Entity Relationship diagram (ER)
+
+<p align="center">
+  <img src="documentation/entity relationship diagram (erd).png" alt="Description" width="1000">
+</p>
+
+## Relational Model (MR)
+
+<p align="center">
+  <img src="documentation/relational_model (rm).png" alt="Description" width="1000">
+</p>
