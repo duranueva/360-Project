@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}
+    Home page
+{% endblock title %}
+{% block content %}
+    <h2>User List</h2>
+    <table>
+    <tr>
+        <th>ID</th><th>Username</th><th>Password</th><th>Date</th><th>Role</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.usuario }}</td>
+        <td>{{ user.contrasena }}</td>
+        <td>{{ user.fecha_creacion }}</td>
+        <td>{{ user.id_centro_evaluador }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+{% endblock content %}
