@@ -21,3 +21,10 @@ In the future, i will launch to a server and add more components.
 <p align="center">
   <img src="documentation/relational_model (rm).png" alt="Description" width="1000">
 </p>
+
+## Django apps diagram
+
+<p align="center">
+  <img src="documentation/django_diagram.png" alt="Description" width="1000">
+</p>
+
