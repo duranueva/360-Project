@@ -16,6 +16,17 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+from django.urls import reverse_lazy
+LOGIN_URL = 'start'
+LOGIN_REDIRECT_URL = 'admn_panel/estandares/'  # after login
+#LOGOUT_REDIRECT_URL = 'start'
+
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.UsuarioBackend',  # Adjust path if needed
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -37,7 +48,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "accounts"
+    "accounts",
+    "admn_panel",
+    "documents",
 ]
 
 MIDDLEWARE = [
@@ -61,18 +74,27 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.request',  # ✅ Agregado apra poder hacer más dinamicas las redireccioens
                 'django.contrib.messages.context_processors.messages',
             ],
         },
     },
 ]
 
+
 WSGI_APPLICATION = 'cert_app.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
+"""'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'cert_app_v2',
+        'USER': 'postgres',
+        'PASSWORD': '2612',
+        'HOST': 'localhost',
+        'PORT': '5432',  # Default PostgreSQL port
+    }"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',

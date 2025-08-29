@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registro / Iniciar sesión</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+  <div class="bg-white rounded-xl shadow-md w-full max-w-md">
+    
+    <!-- Mensajes Django -->
+    {% if messages %}
+      <div class="p-4">
+        {% for message in messages %}
+          <div class="text-sm text-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Tabs -->
+    <div class="bg-gray-200 rounded-t-xl px-6 pt-6 pb-2 flex justify-between">
+      <button id="tab-register" class="text-sm font-semibold border-b-4 border-[#002C5F] text-[#002C5F] pb-1">Regístrate</button>
+      <button id="tab-login" class="text-sm font-semibold text-gray-600 hover:text-[#002C5F]">Iniciar sesión</button>
+    </div>
+
+    <!-- Contenedor de formularios -->
+    <div class="px-6 py-6">
+      
+      <!-- Formulario de Registro -->
+      <form id="form-register" class="space-y-4" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="register">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Usuario</label>
+          <input type="text" name="usuario" required class="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-[#002C5F] focus:border-[#002C5F]" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Contraseña</label>
+          <input type="password" name="contrasena" required class="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-[#002C5F] focus:border-[#002C5F]" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">ID Centro Evaluador (opcional)</label>
+          <input type="number" name="id_centro_evaluador" class="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-[#002C5F] focus:border-[#002C5F]" />
+        </div>
+        <div class="pt-4">
+          <button type="submit" class="w-full bg-[#002C5F] text-white py-2 rounded-md hover:bg-[#003366]">Regístrate</button>
+        </div>
+      </form>
+
+      <!-- Formulario de Inicio de Sesión -->
+      <form id="form-login" class="space-y-4 hidden" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="login">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Usuario</label>
+          <input type="text" name="usuario" required class="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-[#002C5F] focus:border-[#002C5F]" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Contraseña</label>
+          <input type="password" name="contrasena" required class="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-[#002C5F] focus:border-[#002C5F]" />
+        </div>
+        <div class="pt-4">
+          <button type="submit" class="w-full bg-[#002C5F] text-white py-2 rounded-md hover:bg-[#003366]">Iniciar sesión</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <script>
+    const tabRegister = document.getElementById("tab-register");
+    const tabLogin = document.getElementById("tab-login");
+    const formRegister = document.getElementById("form-register");
+    const formLogin = document.getElementById("form-login");
+
+    tabRegister.addEventListener("click", () => {
+      tabRegister.classList.add("border-b-4", "border-[#002C5F]", "text-[#002C5F]");
+      tabLogin.classList.remove("border-b-4", "border-[#002C5F]", "text-[#002C5F]");
+      tabLogin.classList.add("text-gray-600");
+
+      formRegister.classList.remove("hidden");
+      formLogin.classList.add("hidden");
+    });
+
+    tabLogin.addEventListener("click", () => {
+      tabLogin.classList.add("border-b-4", "border-[#002C5F]", "text-[#002C5F]");
+      tabRegister.classList.remove("border-b-4", "border-[#002C5F]", "text-[#002C5F]");
+      tabRegister.classList.add("text-gray-600");
+
+      formRegister.classList.add("hidden");
+      formLogin.classList.remove("hidden");
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interfaz EC</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#F5F5F5] h-screen flex flex-col overflow-hidden">
+
+  <!-- Header -->
+  <header class="bg-[#D1D1D1] text-white h-16 flex items-center justify-end px-6 shrink-0">
+    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-black">
+      <!-- Icono de usuario -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M5.121 17.804A10 10 0 0112 2a10 10 0 016.879 15.804M15 12a3 3 0 01-6 0"/>
+      </svg>
+    </div>
+  </header>
+
+  <!-- Contenedor principal con sidebar -->
+  <div class="flex flex-1 min-h-0">
+
+    <!-- Sidebar -->
+    <aside class="bg-[#D1D1D1] text-black w-48 flex flex-col justify-between">
+      <div class="space-y-2 p-4">
+        <a href="{% url 'seguimiento' %}"
+          class="w-full block text-left px-3 py-2 rounded
+                  {% if request.resolver_match.url_name == 'seguimiento' %}
+                    bg-[#F5F5F5]
+                  {% else %}
+                    hover:bg-[#F5F5F5]
+                  {% endif %}">
+          Seguimiento
+        </a>
+        <a href="{% url 'proyectos' %}"
+          class="w-full block text-left px-3 py-2 rounded
+                  {% if request.resolver_match.url_name == 'proyectos' %}
+                    bg-[#F5F5F5]
+                  {% else %}
+                    hover:bg-[#F5F5F5]
+                  {% endif %}">
+          Proyectos
+        </a>
+        <a href="{% url 'equipo' %}"
+          class="w-full block text-left px-3 py-2 rounded
+                  {% if request.resolver_match.url_name == 'equipo' %}
+                    bg-[#F5F5F5]
+                  {% else %}
+                    hover:bg-[#F5F5F5]
+                  {% endif %}">
+          Equipo
+        </a>
+        <a href="{% url 'creditos' %}"
+          class="w-full block text-left px-3 py-2 rounded
+                  {% if request.resolver_match.url_name == 'creditos' %}
+                    bg-[#F5F5F5]
+                  {% else %}
+                    hover:bg-[#F5F5F5]
+                  {% endif %}">
+          Créditos
+        </a>
+      </div>
+      <div class="p-4">
+        <button class="w-full block text-left px-3 py-2 rounded hover:bg-[#F5F5F5]">Soporte</button>
+        <a href="{% url 'estandares' %}" class="w-full block text-left px-3 py-2 rounded hover:bg-[#F5F5F5]">Administrador</a>
+        <a href="{% url 'logout' %}" class="w-full block text-left px-3 py-2 rounded hover:bg-[#F5F5F5]">Cerrar Sesión</a>
+      </div>
+    </aside>
+
+
+    <!-- Contenido principal -->
+    <main class="flex-1 flex flex-col overflow-hidden">
+      <div class="flex-1 overflow-y-auto p-6 space-y-6">
+        {% block content %} {% endblock %}
+
+        {% comment %} <!-- Sección de Proyectos -->
+        <h2 class="text-lg font-semibold">Proyectos</h2>
+        <div class="flex gap-10">
+          <div class="flex flex-col items-center">
+            <div class="bg-black text-white w-16 h-16 flex items-center justify-center rounded-md">
+              ➡️
+            </div>
+            <span class="mt-2">Naucalpan</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="bg-black text-white w-16 h-16 flex items-center justify-center rounded-md">
+              ➡️
+            </div>
+            <span class="mt-2">Xalapa</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="bg-black text-white w-16 h-16 flex items-center justify-center rounded-md">
+              ➡️
+            </div>
+            <span class="mt-2">Morelos</span>
+          </div>
+        </div>
+
+        <!-- Botones inferiores -->
+        <div class="flex gap-4 mt-8">
+          <div class="flex flex-col items-center">
+            <button class="bg-[#D9D9D9] text-black px-4 py-2 w-24 hover:bg-black hover:text-white">Descargar</button>
+            <button class="bg-[#D9D9D9] text-black px-4 py-2 w-24 mt-2 hover:bg-black hover:text-white">Enviar</button>
+          </div>
+          <div class="flex flex-col items-center">
+            <button class="bg-[#D9D9D9] text-black px-4 py-2 w-24 hover:bg-black hover:text-white">Descargar</button>
+            <button class="bg-[#D9D9D9] text-black px-4 py-2 w-24 mt-2 hover:bg-black hover:text-white">Enviar</button>
+          </div>
+          <div class="flex flex-col items-center">
+            <button class="bg-[#D9D9D9] text-black px-4 py-2 w-24 hover:bg-black hover:text-white">Escanear</button>
+            <button class="bg-[#D9D9D9] text-black px-4 py-2 w-24 mt-2 hover:bg-black hover:text-white">Abrir</button>
+          </div>
+        </div> {% endcomment %}
+
+      </div>
+
+      <!-- Footer -->
+      <footer class="bg-[#D1D1D1] h-20 flex items-center justify-between px-6 text-sm text-black">
+        {% comment %} <div class="flex gap-4">
+          <button class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-black hover:text-white">Certificados</button>
+          <button class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-black hover:text-white">Portafolios</button>
+          <button class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-black hover:text-white">Asignar Evaluaciones</button>
+          <button class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-black hover:text-white">Subir documentos</button>
+          <button class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-black hover:text-white">Agregar candidato</button>
+          <button class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-black hover:text-white">Crear proyecto</button>
+        </div>
+      </footer> {% endcomment %}
+    </main>
+  </div>
+
+</body>
+</html>
+
+

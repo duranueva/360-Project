@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interfaz EC</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col overflow-hidden">
+
+  <!-- Header -->
+  <header class="bg-[#002C5F] text-white h-16 flex items-center justify-end px-6 shrink-0">
+    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#002C5F]">
+      <!-- Icono de usuario -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M5.121 17.804A10 10 0 0112 2a10 10 0 016.879 15.804M15 12a3 3 0 01-6 0"/>
+      </svg>
+    </div>
+  </header>
+
+  <!-- Contenedor principal con sidebar hasta abajo -->
+  <div class="flex flex-1 min-h-0">
+
+    <!-- Sidebar a altura completa -->
+    <aside class="bg-[#002C5F] text-white w-48 flex flex-col justify-between">
+      <div class="space-y-2 p-4">
+        <button class="w-full text-left px-3 py-2 hover:bg-[#003366] rounded">Control</button>
+        <button class="w-full text-left px-3 py-2 hover:bg-[#003366] rounded">Estándares</button>
+        <button class="w-full text-left px-3 py-2 hover:bg-[#003366] rounded">Usuarios</button>
+        <button class="w-full text-left px-3 py-2 bg-white text-[#002C5F] rounded">EC</button>
+      </div>
+      <div class="p-4">
+        <button class="w-full text-left px-3 py-2 hover:bg-[#003366] rounded">Soporte</button>
+      </div>
+    </aside>
+
+    <!-- Contenido desplazable -->
+    <main class="flex-1 flex flex-col overflow-hidden">
+      <div class="flex-1 overflow-y-auto p-6 space-y-8">
+        <!-- Formulario -->
+        <div class="bg-gray-300 p-8 rounded-md w-full max-w-md mx-auto space-y-4">
+          <div>
+            <label class="block font-semibold mb-1">CÓDIGO</label>
+            <input type="text" class="w-full p-2 rounded border border-gray-400" />
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">TÍTULO</label>
+            <input type="text" class="w-full p-2 rounded border border-gray-400" />
+          </div>
+          <div class="space-y-2 pt-4">
+            <button class="w-full bg-[#002C5F] text-white py-2 rounded hover:bg-[#003366]">AGREGAR DIAGNÓSTICO</button>
+            <button class="w-full bg-[#002C5F] text-white py-2 rounded hover:bg-[#003366]">AGREGAR PLAN DE EVALUACIÓN</button>
+            <button class="w-full bg-[#002C5F] text-white py-2 rounded hover:bg-[#003366]">AGREGAR IEC</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer con botones de tamaño fijo -->
+      <footer class="bg-[#002C5F] h-16 flex items-center justify-end gap-2 px-6 shrink-0">
+        <button class="w-[150px] py-2 text-white hover:bg-[#003366] border-r border-white">Cancelar</button>
+        <button class="w-[150px] py-2 text-white hover:bg-[#003366] border-r border-white">Eliminar</button>
+        <button class="w-[150px] py-2 text-white hover:bg-[#003366] border-r border-white">Guardar</button>
+        <button class="w-[150px] py-2 text-white hover:bg-[#003366]">Agregar EC</button>
+      </footer>
+    </main>
+  </div>
+
+</body>
+</html>
