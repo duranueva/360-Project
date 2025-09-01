@@ -3,20 +3,21 @@
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     {% comment %} <center> {% endcomment %}
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Proyectos</h2>
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Proyectos > (((Nombre grupo)))</h2>
     {% comment %} </center> {% endcomment %}
 
-    <!-- Proyectos con loop -->
+    <!-- Grupos con loop -->
     <div class="flex gap-16 mb-12 flex-wrap">
-        {% for proyecto in proyectos %}
-            <a href="{% url 'grupos' %}" class="flex flex-col items-center group">
+        {% for grupo in grupos %}
+            {% comment %} <a class="flex flex-col items-center group"> {% endcomment %}
+            <a href="{% url 'candidatos' %}" class="flex flex-col items-center group">
                 <div class="bg-black text-white w-20 h-20 flex items-center justify-center rounded-md shadow-md group-hover:scale-105 transition">
                     ➡️
                 </div>
-                <span class="mt-2 text-gray-700 font-medium">{{ proyecto }}</span>
+                <span class="mt-2 text-gray-700 font-medium">{{ grupo }}</span>
             </a>
         {% empty %}
-            <p class="text-center text-gray-500">No hay proyectos disponibles.</p>
+            <p class="text-center text-gray-500">No hay grupos disponibles.</p>
         {% endfor %}
     </div>
 

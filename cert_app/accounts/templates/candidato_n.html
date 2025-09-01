@@ -3,7 +3,7 @@
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     {% comment %} <center> {% endcomment %}
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Integrantes del Centro Evaluador</h2>
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Proyectos > (((Nombre grupo))) > Candidatos > (((Candidato_n)))</h2>
     {% comment %} </center> {% endcomment %}
 </div>
 
@@ -13,10 +13,11 @@
     <table class="min-w-full text-left text-sm text-black">
       <thead class="border-b border-gray-400">
         <tr>
-          <th class="px-4 py-2">Nombre</th>
-          <th class="px-4 py-2">Función</th>
-          <th class="px-4 py-2">Correo</th>
+          <th class="px-4 py-2">Candidato</th>
+          <th class="px-4 py-2">Documento</th>
+          <th class="px-4 py-2">Realizado</th>
           <th class="px-4 py-2">Acción</th>
+          <th class="px-4 py-2">Check</th>
         </tr>
       </thead>
       <tbody>
@@ -26,6 +27,7 @@
               <td class="px-4 py-2">_</td>     <!-- Placeholder -->
               <td class="px-4 py-2">_</td>     <!-- Placeholder -->
               <td class="px-4 py-2">_</td>     <!-- Placeholder -->
+              <td class="px-4 py-2"><input type="checkbox" id="id_cbox_i" value="v_cbox_i" /></td>     <!-- Placeholder -->
             </tr>
         {% empty %}
             <tr>
