@@ -11,18 +11,12 @@ def base_doc(request):
 """
     Sección Seguimiento
 """
-from django.forms.models import model_to_dict
 @login_required
 def seguimiento(request):
-    """
     candidatos = models.Candidato.objects.all()
-    candidatos_dicts = [model_to_dict(c) for c in candidatos]
     for c in candidatos:
         print(c) 
-    return render(request, "seguimiento.html", {"candidatos": candidatos, "candidatos_dicts": candidatos_dicts})"""
-    candidatos = models.Candidato.objects.all()
-    candidatos_con_dict = [(c, model_to_dict(c)) for c in candidatos]
-    return render(request, "seguimiento.html", {"candidatos_con_dict": candidatos_con_dict})
+    return render(request, "seguimiento.html", {"candidatos": candidatos})
 
 
 """@login_required

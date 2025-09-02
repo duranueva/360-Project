@@ -1,4 +1,6 @@
 from django.db import models, connection
+from django.utils import timezone
+
 
 
 class Candidato(models.Model):
@@ -13,6 +15,7 @@ class Candidato(models.Model):
 
     def __str__(self):
         fields = [
+            f"id: {self.id or 'null'}",
             f"fecha_creacion: {self.fecha_creacion or 'null'}",
             f"nombre: {self.nombre or 'null'}",
             f"ap_paterno: {self.ap_paterno or 'null'}",
@@ -27,6 +30,43 @@ class Candidato(models.Model):
     class Meta:
         managed = False
         db_table = 'candidato'
+
+class InfoProcesoCandidato(models.Model):
+    id_candidato = models.ForeignKey(
+        'Candidato',
+        on_delete=models.CASCADE,
+        db_column='id_candidato'
+    )
+    id_grupo = models.ForeignKey(
+        'Grupo',
+        on_delete=models.SET_NULL,
+        null=True,
+        db_column='id_grupo'
+    )
+    fecha_creacion = models.DateField(blank=True, null=True, default=timezone.now)
+    portada = models.BinaryField(blank=True, null=True)
+    indice = models.BinaryField(blank=True, null=True)
+    carta_recepcion_docs = models.BinaryField(blank=True, null=True)
+    fecha_registro_generado = models.DateField(blank=True, null=True)
+    reporte_autenticidad = models.BinaryField(blank=True, null=True)
+    triptico_derechos_img = models.BinaryField(blank=True, null=True)
+    encuesta_satisfaccion = models.BinaryField(blank=True, null=True)
+    cedula_evaluacion = models.BinaryField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Proceso de {self.id_candidato_id} en grupo {self.id_grupo_id or 'null'}"
+
+    class Meta:
+        managed = False
+        db_table = 'info_proceso_candidato'
+
+class Grupo(models.Model):
+    # define aquí los campos de tu tabla Grupo
+    nombre = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'grupo'
 
 def query_all_table__candidato():
     with connection.cursor() as cursor:

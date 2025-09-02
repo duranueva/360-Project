@@ -39,96 +39,117 @@
   <!-- Tabla -->
   <div class="overflow-x-auto bg-[#D9D9D9] rounded-md p-4 shadow max-w-7xl mx-auto">
     <table class="min-w-full text-left text-sm text-black">
-      <thead class="border-b border-gray-400">
-        <tr>
-          <th class="px-4 py-2">EC</th>
-          <th class="px-4 py-2">Candidato</th>
-          <th class="px-4 py-2">Documento</th>
-          <th class="px-4 py-2">Realizado</th>
-          <th class="px-4 py-2">Acción</th>
-          <th class="px-4 py-2">Check</th>
-        </tr>
-      </thead>
       <tbody>
-        {% comment %}         
+                
         {% for candidato in candidatos %}
-          <!-- Fila: Nombre de candidato-->
-          <tr class="border-t border-gray-300 hover:bg-gray-200">
-            <td class="px-4 py-2">_</td>
-            <td class="px-4 py-2">{{candidato.nombre}}</td>
-            <td class="px-4 py-2">_</td>     <!-- Placeholder -->
-            <td class="px-4 py-2">_</td>     <!-- Placeholder -->
-            <td class="px-4 py-2">_</td>     <!-- Placeholder -->
-            <td class="px-4 py-2"><input type="checkbox" id="id_cbox_i" value="v_cbox_i" /></td>     <!-- Placeholder -->
+          <!-- Nombre candidato -->
+          <thead class="border-b border-gray-400">
+            <tr>
+              <th colspan="10" class="text-center py-4">{{candidato.nombre}}</th>
+            </tr>
+          </thead>
+
+          <!-- EC, Proyecto, Grupo -->
+          <tr>
+            <td colspan="10" class="text-center py-4">EC: x.    Proyecto: y.   Grupo: z.</td>
           </tr>
 
-          {% for c in candidato %}
 
-            <tr class="border-t border-gray-300 hover:bg-gray-200">
-              <td class="px-4 py-2">_</td>
-              <td class="px-4 py-2">{{c}}</td>
-              <td class="px-4 py-2">_</td>     <!-- Placeholder -->
-              <td class="px-4 py-2">_</td>     <!-- Placeholder -->
-              <td class="px-4 py-2">_</td>     <!-- Placeholder -->
-              <td class="px-4 py-2"><input type="checkbox" id="id_cbox_i" value="v_cbox_i" /></td>     <!-- Placeholder -->
-            </tr>
-          {% empty %}
-            <tr>
-              <td colspan="10" class="text-center py-4">No hay Documentación.</td>
-            </tr>
-          {% endfor %}
+
+
+          <!-- Columnas -->
+          <tr>
+            <th class="px-4 py-2">Documento</th>
+            <th class="px-4 py-2">Realizado</th>
+            <th class="px-4 py-2">Acción</th>
+          </tr>
+
+          <!-- Filas: Documentos-->
+          <!-- Correo -->
+          <tr class="border-t border-gray-300 hover:bg-gray-200">
+            <td class="px-4 py-2">Correo</td>     
+            <td class="px-4 py-2">
+              {% if candidato.correo %}
+                ✅
+              {% else %}
+                ❌
+              {% endif %}
+            </td>
+            <td class="px-4 py-2">
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Agregar/Modificar
+              </a>
+              {% comment %} {% if candidato.correo %}
+                <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Ver
+                </a>
+              {% else %}
+                <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Ver
+                </a>
+              {% endif %} {% endcomment %}
+            </td>
+          </tr>
+
+          <!-- Curp -->
+          <tr class="border-t border-gray-300 hover:bg-gray-200">
+            <td class="px-4 py-2">Curp</td>     
+            <td class="px-4 py-2">
+              {% if candidato.curp %}
+                ✅
+              {% else %}
+                ❌
+              {% endif %}
+            </td>
+            <td class="px-4 py-2">
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Agregar/Modificar
+              </a>
+            </td>
+          </tr>
+
+          <!-- INE -->
+          <tr class="border-t border-gray-300 hover:bg-gray-200">
+            <td class="px-4 py-2">INE</td>     
+            <td class="px-4 py-2">
+              {% if candidato.ine %}
+                ✅
+              {% else %}
+                ❌
+              {% endif %}
+            </td>
+            <td class="px-4 py-2">
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Agregar/Modificar
+              </a>
+            </td>
+          </tr>
+          
+          <!-- Foto -->
+          <tr class="border-t border-gray-300 hover:bg-gray-200">
+            <td class="px-4 py-2">Foto</td>     
+            <td class="px-4 py-2">
+              {% if candidato.foto %}
+                ✅
+              {% else %}
+                ❌
+              {% endif %}
+            </td>
+            <td class="px-4 py-2">
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Agregar/Modificar
+              </a>
+            </td>
+          </tr>
+          
+          
         {% empty %}
             <tr>
               <td colspan="10" class="text-center py-4">No hay candidatos registrados.</td>
             </tr>
         {% endfor %} 
-        {% endcomment %}
-
-      
-        {% comment %} {% for candidato in candidatos %}
-          <tr class="border-t border-gray-300 bg-gray-100">
-            <td class="px-4 py-2 font-semibold">Candidato</td>
-            <td class="px-4 py-2 font-semibold" colspan="5">{{ candidato.nombre }}</td>
-          </tr>
-
-          {% with cand_dict=candidatos_dicts|index:forloop.counter0 %}
-            {% for key, value in cand_dict.items %}
-              <tr class="border-t border-gray-200">
-                <td class="px-4 py-2">{{ key }}</td>
-                <td class="px-4 py-2" colspan="5">
-                  {{ value|default:"null" }}
-                </td>
-              </tr>
-            {% endfor %}
-          {% endwith %}
-        {% empty %}
-          <tr>
-            <td colspan="6" class="text-center py-4">No hay candidatos registrados.</td>
-          </tr>
-        {% endfor %} {% endcomment %}
-
-        {% for candidato, campos in candidatos_con_dict %}
-          <tr class="border-t border-gray-300 bg-gray-100">
-            <td class="px-4 py-2 font-semibold">Candidato</td>
-            <td class="px-4 py-2 font-semibold" colspan="5">{{ candidato.nombre }}</td>
-          </tr>
-
-          {% for key, value in campos.items %}
-            <tr class="border-t border-gray-200">
-              <td class="px-4 py-2">{{ key }}</td>
-              <td class="px-4 py-2" colspan="5">{{ value|default:"null" }}</td>
-            </tr>
-          {% endfor %}
-        {% empty %}
-          <tr>
-            <td colspan="6" class="text-center py-4">No hay candidatos registrados.</td>
-          </tr>
-        {% endfor %}
-
       </tbody>
-
     </table>
   </div>
-
 </div>
 {% endblock %}
