@@ -47,7 +47,7 @@ class InfoProcesoCandidato(models.Model):
     portada = models.BinaryField(blank=True, null=True)
     indice = models.BinaryField(blank=True, null=True)
     carta_recepcion_docs = models.BinaryField(blank=True, null=True)
-    fecha_registro_generado = models.DateField(blank=True, null=True)
+    #ficha_registro_generado = models.BinaryField(blank=True, null=True)
     reporte_autenticidad = models.BinaryField(blank=True, null=True)
     triptico_derechos_img = models.BinaryField(blank=True, null=True)
     encuesta_satisfaccion = models.BinaryField(blank=True, null=True)
@@ -76,3 +76,25 @@ def query_all_table__candidato():
         columns = [col[0] for col in cursor.description]  # Get column names
         rows = cursor.fetchall()
     return [dict(zip(columns, row)) for row in rows]  # List of dicts
+
+def insert_file_to_bytea__candidato(candidato_id, file_path):
+    with open(file_path, 'rb') as f:
+        binary_data = f.read()
+
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            UPDATE candidato
+            SET ine = %s, foto = %s
+            WHERE id = %s
+        """, [binary_data, binary_data, candidato_id])
+
+def insert_file_to_bytea__proceso(proceso_id, file_path):
+    with open(file_path, 'rb') as f:
+        binary_data = f.read()
+
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            UPDATE info_proceso_candidato
+            SET portada = %s, indice = %s
+            WHERE id = %s
+        """, [binary_data, binary_data, candidato_id])

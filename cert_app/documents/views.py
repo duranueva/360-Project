@@ -13,15 +13,29 @@ def base_doc(request):
 """
 @login_required
 def seguimiento(request):
+    path = r"C:\Users\costo\Downloads\test.jpg"
+    """
+    id = 1
+    models.insert_file_to_bytea__candidato(id, path)
+    """
+
+
     candidatos = models.Candidato.objects.all()
-    for c in candidatos:
-        print(c) 
-    return render(request, "seguimiento.html", {"candidatos": candidatos})
+    data = []
 
+    for candidato in candidatos:
+        try:
+            proceso = models.InfoProcesoCandidato.objects.get(id_candidato_id=candidato.id)
+        except models.InfoProcesoCandidato.DoesNotExist:
+            proceso = None
 
-"""@login_required
-def seguimiento(request):
-    return render(request,"seguimiento.html")"""
+        data.append({
+            "candidato": candidato,
+            "proceso": proceso
+        })
+
+    return render(request, "seguimiento.html", {"candidatos_info": data})
+
 
 """
     Sección Proyectos

@@ -40,114 +40,186 @@
   <div class="overflow-x-auto bg-[#D9D9D9] rounded-md p-4 shadow max-w-7xl mx-auto">
     <table class="min-w-full text-left text-sm text-black">
       <tbody>
-                
-        {% for candidato in candidatos %}
-          <!-- Nombre candidato -->
-          <thead class="border-b border-gray-400">
+
+        {% for item in candidatos_info %}
+          {% with candidato=item.candidato proceso=item.proceso %}
+            <!-- Nombre candidato -->
+            <thead class="border-b border-gray-400">
+              <tr>
+                <th colspan="10" class="text-center py-4">{{ candidato.nombre }}</th>
+              </tr>
+            </thead>
+
+            <!-- EC, Proyecto, Grupo -->
             <tr>
-              <th colspan="10" class="text-center py-4">{{candidato.nombre}}</th>
+              <td colspan="10" class="text-center py-4">
+                EC: x. Proyecto: y. Grupo:
+                {% if proceso and proceso.id_grupo %}
+                  {{ proceso.id_grupo.nombre }}
+                {% else %}
+                  Sin grupo
+                {% endif %}
+              </td>
             </tr>
-          </thead>
 
-          <!-- EC, Proyecto, Grupo -->
-          <tr>
-            <td colspan="10" class="text-center py-4">EC: x.    Proyecto: y.   Grupo: z.</td>
-          </tr>
+            <!-- Columnas -->
+            <tr>
+              <th class="px-4 py-2">Documento</th>
+              <th class="px-4 py-2">Realizado</th>
+              <th class="px-4 py-2">Acción</th>
+            </tr>
 
-
-
-
-          <!-- Columnas -->
-          <tr>
-            <th class="px-4 py-2">Documento</th>
-            <th class="px-4 py-2">Realizado</th>
-            <th class="px-4 py-2">Acción</th>
-          </tr>
-
-          <!-- Filas: Documentos-->
-          <!-- Correo -->
-          <tr class="border-t border-gray-300 hover:bg-gray-200">
-            <td class="px-4 py-2">Correo</td>     
-            <td class="px-4 py-2">
-              {% if candidato.correo %}
-                ✅
-              {% else %}
-                ❌
-              {% endif %}
-            </td>
-            <td class="px-4 py-2">
-              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
-                Agregar/Modificar
-              </a>
-              {% comment %} {% if candidato.correo %}
+            <!-- Correo -->
+            <tr class="border-t border-gray-300 hover:bg-gray-200">
+              <td class="px-4 py-2">Correo</td>     
+              <td class="px-4 py-2">
+                {% if candidato.correo %} ✅ {% else %} ❌ {% endif %}
+              </td>
+              <td class="px-4 py-2">
                 <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
-                  Ver
+                  Agregar/Modificar
                 </a>
-              {% else %}
+              </td>
+            </tr>
+
+            <!-- CURP -->
+            <tr class="border-t border-gray-300 hover:bg-gray-200">
+              <td class="px-4 py-2">CURP</td>
+              <td class="px-4 py-2">
+                {% if candidato.curp %} ✅ {% else %} ❌ {% endif %}
+              </td>
+              <td class="px-4 py-2">
                 <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
-                  Ver
+                  Agregar/Modificar
                 </a>
-              {% endif %} {% endcomment %}
-            </td>
-          </tr>
+              </td>
+            </tr>
 
-          <!-- Curp -->
-          <tr class="border-t border-gray-300 hover:bg-gray-200">
-            <td class="px-4 py-2">Curp</td>     
-            <td class="px-4 py-2">
-              {% if candidato.curp %}
-                ✅
-              {% else %}
-                ❌
-              {% endif %}
-            </td>
-            <td class="px-4 py-2">
-              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
-                Agregar/Modificar
-              </a>
-            </td>
-          </tr>
+            <!-- INE -->
+            <tr class="border-t border-gray-300 hover:bg-gray-200">
+              <td class="px-4 py-2">INE</td>
+              <td class="px-4 py-2">
+                {% if candidato.ine %} ✅ {% else %} ❌ {% endif %}
+              </td>
+              <td class="px-4 py-2">
+                <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Agregar/Modificar
+                </a>
+              </td>
+            </tr>
 
-          <!-- INE -->
-          <tr class="border-t border-gray-300 hover:bg-gray-200">
-            <td class="px-4 py-2">INE</td>     
-            <td class="px-4 py-2">
-              {% if candidato.ine %}
-                ✅
-              {% else %}
-                ❌
-              {% endif %}
-            </td>
-            <td class="px-4 py-2">
-              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
-                Agregar/Modificar
-              </a>
-            </td>
-          </tr>
-          
-          <!-- Foto -->
-          <tr class="border-t border-gray-300 hover:bg-gray-200">
-            <td class="px-4 py-2">Foto</td>     
-            <td class="px-4 py-2">
-              {% if candidato.foto %}
-                ✅
-              {% else %}
-                ❌
-              {% endif %}
-            </td>
-            <td class="px-4 py-2">
-              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
-                Agregar/Modificar
-              </a>
-            </td>
-          </tr>
-          
-          
+            <!-- Foto -->
+            <tr class="border-t border-gray-300 hover:bg-gray-200">
+              <td class="px-4 py-2">Foto</td>
+              <td class="px-4 py-2">
+                {% if candidato.foto %} ✅ {% else %} ❌ {% endif %}
+              </td>
+              <td class="px-4 py-2">
+                <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Agregar/Modificar
+                </a>
+              </td>
+            </tr>
+
+            <!-- Portada (usando InfoProcesoCandidato) -->
+            <tr class="border-t border-gray-300 hover:bg-gray-200">
+              <td class="px-4 py-2">Portada</td>
+              <td class="px-4 py-2">
+                {% if proceso and proceso.portada %} ✅ {% else %} ❌ {% endif %}
+              </td>
+              <td class="px-4 py-2">
+                <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Agregar/Modificar
+                </a>
+              </td>
+            </tr>
+
+            <!-- Indice (usando InfoProcesoCandidato) -->
+            <tr class="border-t border-gray-300 hover:bg-gray-200">
+              <td class="px-4 py-2">Indice</td>
+              <td class="px-4 py-2">
+                {% if proceso and proceso.indice %} ✅ {% else %} ❌ {% endif %}
+              </td>
+              <td class="px-4 py-2">
+                <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Agregar/Modificar
+                </a>
+              </td>
+            </tr>
+            
+
+            <!-- Carta Recepción Documentos (usando InfoProcesoCandidato) -->
+            <tr class="border-t border-gray-300 hover:bg-gray-200">
+              <td class="px-4 py-2">Carta Recepción Documentos</td>
+              <td class="px-4 py-2">
+                {% if proceso and proceso.carta_recepcion_docs %} ✅ {% else %} ❌ {% endif %}
+              </td>
+              <td class="px-4 py-2">
+                <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Agregar/Modificar
+                </a>
+              </td>
+            </tr>
+
+            <!-- Reporte de Autenticidad (usando InfoProcesoCandidato) -->
+            <tr class="border-t border-gray-300 hover:bg-gray-200">
+              <td class="px-4 py-2">Reporte de Autenticidad</td>
+              <td class="px-4 py-2">
+                {% if proceso and proceso.reporte_autenticidad %} ✅ {% else %} ❌ {% endif %}
+              </td>
+              <td class="px-4 py-2">
+                <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Agregar/Modificar
+                </a>
+              </td>
+            </tr>
+
+            <!-- Triptico de Derechos (usando InfoProcesoCandidato) -->
+            <tr class="border-t border-gray-300 hover:bg-gray-200">
+              <td class="px-4 py-2">Triptico de Derechos</td>
+              <td class="px-4 py-2">
+                {% if proceso and proceso.triptico_derechos_img %} ✅ {% else %} ❌ {% endif %}
+              </td>
+              <td class="px-4 py-2">
+                <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Agregar/Modificar
+                </a>
+              </td>
+            </tr>
+
+            <!-- Encuesta de Satisfacción (usando InfoProcesoCandidato) -->
+            <tr class="border-t border-gray-300 hover:bg-gray-200">
+              <td class="px-4 py-2">Encuesta de Satisfacción</td>
+              <td class="px-4 py-2">
+                {% if proceso and proceso.encuesta_satisfaccion %} ✅ {% else %} ❌ {% endif %}
+              </td>
+              <td class="px-4 py-2">
+                <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Agregar/Modificar
+                </a>
+              </td>
+            </tr>
+
+            <!-- Cedula de Evaluación (usando InfoProcesoCandidato) -->
+            <tr class="border-t border-gray-300 hover:bg-gray-200">
+              <td class="px-4 py-2">Cedula de Evaluación</td>
+              <td class="px-4 py-2">
+                {% if proceso and proceso.cedula_evaluacion %} ✅ {% else %} ❌ {% endif %}
+              </td>
+              <td class="px-4 py-2">
+                <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Agregar/Modificar
+                </a>
+              </td>
+            </tr>
+
+          {% endwith %}
         {% empty %}
-            <tr>
-              <td colspan="10" class="text-center py-4">No hay candidatos registrados.</td>
-            </tr>
-        {% endfor %} 
+          <tr>
+            <td colspan="10" class="text-center py-4">No hay candidatos registrados.</td>
+          </tr>
+        {% endfor %}
+
       </tbody>
     </table>
   </div>
