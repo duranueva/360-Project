@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from . import models
 
@@ -18,6 +18,15 @@ def seguimiento(request):
     id = 1
     models.insert_file_to_bytea__candidato(id, path)
     """
+
+    if request.method == "POST":
+        ine_file = request.FILES.get("ine")
+        candidato_id = request.POST.get("candidato_id")
+        if ine_file and candidato_id:
+            candidato = models.Candidato.objects.get(id=candidato_id)
+            candidato.ine = ine_file.read()
+            candidato.save()
+            return redirect("seguimiento")
 
 
     candidatos = models.Candidato.objects.all()
