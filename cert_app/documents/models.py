@@ -12,8 +12,11 @@ class Candidato(models.Model):
     curp = models.BinaryField(blank=True, null=True)
     ine = models.BinaryField(blank=True, null=True)
     foto = models.BinaryField(blank=True, null=True)
-
+    
     def __str__(self):
+        def safe_hex(val):
+            return val.hex() if isinstance(val, (bytes, bytearray)) else 'invalid'
+
         fields = [
             f"id: {self.id or 'null'}",
             f"fecha_creacion: {self.fecha_creacion or 'null'}",
@@ -21,9 +24,9 @@ class Candidato(models.Model):
             f"ap_paterno: {self.ap_paterno or 'null'}",
             f"ap_materno: {self.ap_materno or 'null'}",
             f"correo: {self.correo or 'null'}",
-            f"curp: {self.curp.hex() if self.curp else 'null'}",
-            f"ine: {self.ine.hex() if self.ine else 'null'}",
-            f"foto: {self.foto.hex() if self.foto else 'null'}",
+            f"curp: {safe_hex(self.curp) if self.curp else 'null'}",
+            f"ine: {safe_hex(self.ine) if self.ine else 'null'}",
+            f"foto: {safe_hex(self.foto) if self.foto else 'null'}",
         ]
         return " | ".join(fields)
     

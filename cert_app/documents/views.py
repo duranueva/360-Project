@@ -11,6 +11,64 @@ def base_doc(request):
 """
     Sección Seguimiento
 """
+def seg_aux_ine(request):
+    ine_file = request.FILES.get("ine")
+    candidato_id = request.POST.get("candidato_id")
+    print(">> INE FILE:", ine_file)
+    print(">> CANDIDATO ID:", candidato_id)
+    if ine_file and candidato_id:
+        if ine_file.content_type.startswith("text"):
+            print("❌ Archivo no válido para campo binario: INE")
+            return redirect("seguimiento")
+        candidato = models.Candidato.objects.get(id=candidato_id)
+        candidato.ine = ine_file.read()
+        candidato.save()
+        return redirect("seguimiento")
+
+def seg_aux_foto(request):
+    foto_file = request.FILES.get("foto")
+    candidato_id = request.POST.get("candidato_id")
+    print(">> FOTO FILE:", foto_file)
+    print(">> CANDIDATO ID:", candidato_id)
+    if foto_file and candidato_id:
+        if foto_file.content_type.startswith("text"):
+            print("❌ Archivo no válido para campo binario: FOTO")
+            return redirect("seguimiento")
+        candidato = models.Candidato.objects.get(id=candidato_id)
+        candidato.foto = foto_file.read()
+        candidato.save()
+        return redirect("seguimiento")
+
+
+def seg_aux_curp(request):
+    curp_file = request.FILES.get("curp")
+    candidato_id = request.POST.get("candidato_id")
+    print(">> CURP FILE:", curp_file)
+    print(">> CANDIDATO ID:", candidato_id)
+    if curp_file and candidato_id:
+        if curp_file.content_type.startswith("text"):
+            print("❌ Archivo no válido para campo binario: CURP")
+            return redirect("seguimiento")
+        candidato = models.Candidato.objects.get(id=candidato_id)
+        candidato.curp = curp_file.read()
+        candidato.save()
+        return redirect("seguimiento")
+
+
+def seg_aux_correo(request):
+    correo = request.POST.get("correo")
+    candidato_id = request.POST.get("candidato_id")
+    print(">> CORREO:", correo)
+    print(">> CANDIDATO ID:", candidato_id)
+    if correo and candidato_id:
+        candidato = models.Candidato.objects.get(id=candidato_id)
+        candidato.correo = correo
+        candidato.save()
+        return redirect("seguimiento")
+
+
+
+
 @login_required
 def seguimiento(request):
     path = r"C:\Users\costo\Downloads\test.jpg"
@@ -20,13 +78,16 @@ def seguimiento(request):
     """
 
     if request.method == "POST":
-        ine_file = request.FILES.get("ine")
-        candidato_id = request.POST.get("candidato_id")
-        if ine_file and candidato_id:
-            candidato = models.Candidato.objects.get(id=candidato_id)
-            candidato.ine = ine_file.read()
-            candidato.save()
-            return redirect("seguimiento")
+        if request.FILES.get("ine"):
+            seg_aux_ine(request)
+        elif request.FILES.get("foto"):
+            seg_aux_foto(request)
+        elif request.FILES.get("curp"):
+            seg_aux_curp(request)
+        elif request.POST.get("correo"):
+            seg_aux_correo(request)
+        # if portada ...
+        
 
 
     candidatos = models.Candidato.objects.all()
