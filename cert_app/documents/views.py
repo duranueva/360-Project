@@ -39,7 +39,6 @@ def seg_aux_foto(request):
         candidato.save()
         return redirect("seguimiento")
 
-
 def seg_aux_curp(request):
     curp_file = request.FILES.get("curp")
     candidato_id = request.POST.get("candidato_id")
@@ -54,6 +53,23 @@ def seg_aux_curp(request):
         candidato.save()
         return redirect("seguimiento")
 
+def seg_aux_portada(request):
+    portada_file = request.FILES.get("portada")
+    candidato_id = request.POST.get("candidato_id")
+    print(">> PORTADA FILE:", portada_file)
+    print(">> CANDIDATO ID:", candidato_id)
+    if portada_file and candidato_id:
+        if portada_file.content_type.startswith("text"):
+            print("❌ Archivo no válido para campo binario: PORTADA")
+            return redirect("seguimiento")
+        try:
+            proceso = models.InfoProcesoCandidato.objects.get(id_candidato_id=candidato_id)
+        except models.InfoProcesoCandidato.DoesNotExist:
+            print("❌ No existe InfoProcesoCandidato para el candidato")
+            return redirect("seguimiento")
+        proceso.portada = portada_file.read()
+        proceso.save()
+        return redirect("seguimiento")
 
 def seg_aux_correo(request):
     correo = request.POST.get("correo")
@@ -66,17 +82,124 @@ def seg_aux_correo(request):
         candidato.save()
         return redirect("seguimiento")
 
+def seg_aux_indice(request):
+    indice_file = request.FILES.get("indice")
+    candidato_id = request.POST.get("candidato_id")
+    print(">> INDICE FILE:", indice_file)
+    print(">> CANDIDATO ID:", candidato_id)
+    if indice_file and candidato_id:
+        if indice_file.content_type.startswith("text"):
+            print("❌ Archivo no válido para campo binario: INDICE")
+            return redirect("seguimiento")
+        proceso, _ = models.InfoProcesoCandidato.objects.get_or_create(id_candidato_id=candidato_id)
+        proceso.indice = indice_file.read()
+        proceso.save()
+        return redirect("seguimiento")
+
+def seg_aux_carta_recepcion(request):
+    file = request.FILES.get("carta_recepcion_docs")
+    candidato_id = request.POST.get("candidato_id")
+    if file and candidato_id:
+        try:
+            proceso = models.InfoProcesoCandidato.objects.get(id_candidato_id=candidato_id)
+        except models.InfoProcesoCandidato.DoesNotExist:
+            print("❌ Proceso no encontrado")
+            return redirect("seguimiento")
+
+        if file.content_type.startswith("text"):
+            print("❌ Archivo no válido para campo binario: carta_recepcion_docs")
+            return redirect("seguimiento")
+
+        proceso.carta_recepcion_docs = file.read()
+        proceso.save()
+    return redirect("seguimiento")
+
+def seg_aux_reporte_autenticidad(request):
+    file = request.FILES.get("reporte_autenticidad")
+    candidato_id = request.POST.get("candidato_id")
+    print(">> REPORTE AUTENTICIDAD FILE:", file)
+    print(">> CANDIDATO ID:", candidato_id)
+
+    if file and candidato_id:
+        if file.content_type.startswith("text"):
+            print("❌ Archivo no válido para campo binario: REPORTE AUTENTICIDAD")
+            return redirect("seguimiento")
+
+        try:
+            proceso = models.InfoProcesoCandidato.objects.get(id_candidato_id=candidato_id)
+        except models.InfoProcesoCandidato.DoesNotExist:
+            print("❌ Proceso no encontrado.")
+            return redirect("seguimiento")
+
+        proceso.reporte_autenticidad = file.read()
+        proceso.save()
+        return redirect("seguimiento")
+
+def seg_aux_triptico_derechos(request):
+    triptico_file = request.FILES.get("triptico_derechos_img")
+    candidato_id = request.POST.get("candidato_id")
+    print(">> TRIPTICO FILE:", triptico_file)
+    print(">> CANDIDATO ID:", candidato_id)
+
+    if triptico_file and candidato_id:
+        if triptico_file.content_type.startswith("text"):
+            print("❌ Archivo no válido para campo binario: TRIPTICO DERECHOS")
+            return redirect("seguimiento")
+        
+        try:
+            proceso = models.InfoProcesoCandidato.objects.get(id_candidato_id=candidato_id)
+        except models.InfoProcesoCandidato.DoesNotExist:
+            print("❌ No existe InfoProcesoCandidato")
+            return redirect("seguimiento")
+        
+        proceso.triptico_derechos_img = triptico_file.read()
+        proceso.save()
+        return redirect("seguimiento")
+
+def seg_aux_encuesta_satisfaccion(request):
+    archivo = request.FILES.get("encuesta_satisfaccion")
+    candidato_id = request.POST.get("candidato_id")
+    print(">> ENCUESTA:", archivo)
+    print(">> CANDIDATO ID:", candidato_id)
+
+    if archivo and candidato_id:
+        if archivo.content_type.startswith("text"):
+            print("❌ Archivo no válido para campo binario: ENCUESTA SATISFACCION")
+            return redirect("seguimiento")
+        try:
+            proceso = models.InfoProcesoCandidato.objects.get(id_candidato_id=candidato_id)
+        except models.InfoProcesoCandidato.DoesNotExist:
+            print("❌ No existe InfoProcesoCandidato para el candidato")
+            return redirect("seguimiento")
+        proceso.encuesta_satisfaccion = archivo.read()
+        proceso.save()
+        return redirect("seguimiento")
+
+def seg_aux_cedula_evaluacion(request):
+    archivo = request.FILES.get("cedula_evaluacion")
+    candidato_id = request.POST.get("candidato_id")
+    print(">> CEDULA FILE:", archivo)
+    print(">> CANDIDATO ID:", candidato_id)
+
+    if archivo and candidato_id:
+        if archivo.content_type.startswith("text"):
+            print("❌ Archivo no válido para campo binario: CEDULA")
+            return redirect("seguimiento")
+
+        try:
+            proceso = models.InfoProcesoCandidato.objects.get(id_candidato_id=candidato_id)
+            proceso.cedula_evaluacion = archivo.read()
+            proceso.save()
+        except models.InfoProcesoCandidato.DoesNotExist:
+            print("❌ No se encontró el proceso para el candidato.")
+        return redirect("seguimiento")
+
 
 
 
 @login_required
 def seguimiento(request):
-    path = r"C:\Users\costo\Downloads\test.jpg"
-    """
-    id = 1
-    models.insert_file_to_bytea__candidato(id, path)
-    """
-
+    
     if request.method == "POST":
         if request.FILES.get("ine"):
             seg_aux_ine(request)
@@ -84,6 +207,23 @@ def seguimiento(request):
             seg_aux_foto(request)
         elif request.FILES.get("curp"):
             seg_aux_curp(request)
+        elif request.FILES.get("portada"):
+            seg_aux_portada(request)
+        elif request.FILES.get("indice"):
+            seg_aux_indice(request)
+        elif request.FILES.get("carta_recepcion_docs"):
+            seg_aux_carta_recepcion(request)
+        elif request.FILES.get("reporte_autenticidad"):
+            seg_aux_reporte_autenticidad(request)
+        elif request.FILES.get("triptico_derechos_img"):
+            seg_aux_triptico_derechos(request)
+        elif request.FILES.get("encuesta_satisfaccion"):
+            seg_aux_encuesta_satisfaccion(request)
+        elif request.FILES.get("cedula_evaluacion"):
+            seg_aux_cedula_evaluacion(request)
+
+
+
         elif request.POST.get("correo"):
             seg_aux_correo(request)
         # if portada ...

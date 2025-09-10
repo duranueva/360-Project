@@ -81,6 +81,13 @@ def query_all_table__candidato():
     return [dict(zip(columns, row)) for row in rows]  # List of dicts
 
 def insert_file_to_bytea__candidato(candidato_id, file_path):
+    #path = r"C:\Users\costo\Downloads\test.jpg"
+    """
+        Para insertar un dato:
+            
+            id = 1
+            models.insert_file_to_bytea__candidato(id, path)
+    """
     with open(file_path, 'rb') as f:
         binary_data = f.read()
 
