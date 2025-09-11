@@ -194,9 +194,7 @@ def seg_aux_cedula_evaluacion(request):
             print("❌ No se encontró el proceso para el candidato.")
         return redirect("seguimiento")
 
-
-
-
+"""
 @login_required
 def seguimiento(request):
     
@@ -245,6 +243,138 @@ def seguimiento(request):
         })
 
     return render(request, "seguimiento.html", {"candidatos_info": data})
+"""
+
+"""
+@login_required
+def seguimiento(request,debug=True):
+    
+        https://chatgpt.com/share/68929281-4d54-800f-a451-01921c879339
+    
+
+    id_usuario = request.user.id
+    id_ce = Usuario.get_id_ce__from_actual_user(id_usuario)
+    if debug:
+        print("*************************")
+        print("*************************")
+        print("*************************")
+        print("id_ce ",id_ce)
+        print("*************************")
+        print("*************************")
+        print("*************************")
+
+    # Paso 1: Proyectos del CE
+    proyectos = models.Proyecto.objects.filter(id_ce=id_ce).values_list("id", flat=True)
+    if debug:
+        print("*************************")
+        print("*************************")
+        print("*************************")
+        print("proyectos ",proyectos)
+        print("*************************")
+        print("*************************")
+        print("*************************")
+
+    # Paso 2: Grupos de esos proyectos
+    grupos = models.Grupo.objects.filter(id_proyecto__in=proyectos).values_list("id", flat=True)
+    if debug:
+        print("*************************")
+        print("*************************")
+        print("*************************")
+        print("grupos ",grupos)
+        print("*************************")
+        print("*************************")
+        print("*************************")
+
+    # Paso 3: Procesos asociados a esos grupos
+    procesos = models.InfoProcesoCandidato.objects.filter(id_grupo__in=grupos)
+    if debug:
+        print("*************************")
+        print("*************************")
+        print("*************************")
+        print("procesos ",procesos)
+        print("*************************")
+        print("*************************")
+        print("*************************")
+
+    # Paso 4: Obtener los candidatos relacionados
+    candidatos_ids = procesos.values_list("id_candidato_id", flat=True)
+    candidatos = models.Candidato.objects.filter(id__in=candidatos_ids)
+
+    # Construir la data a pasar al template
+    data = []
+    for candidato in candidatos:
+        proceso = procesos.filter(id_candidato_id=candidato.id).first()
+        data.append({
+            "candidato": candidato,
+            "proceso": proceso
+        })
+
+    return render(request, "seguimiento.html", {"candidatos_info": data})
+"""
+
+from admn_panel.models import Usuario  # importa el modelo desde la app correspondiente
+
+@login_required
+def seguimiento(request,debug=True):
+    """
+        https://chatgpt.com/share/68929281-4d54-800f-a451-01921c879339
+    """
+
+    id_usuario = request.user.id
+    id_ce = Usuario.get_id_ce__from_actual_user(id_usuario)
+    if debug:
+        print("*************************")
+        print("*************************")
+        print("*************************")
+        print("id_ce ",id_ce)
+        print("*************************")
+        print("*************************")
+        print("*************************")
+
+    # Obtener proyectos del centro evaluador
+    proyectos = models.Proyecto.objects.filter(id_ce=id_ce)
+    if debug:
+        print("*************************")
+        print("*************************")
+        print("*************************")
+        print("proyectos ",proyectos)
+        print("*************************")
+        print("*************************")
+        print("*************************")
+
+    # Obtener grupos relacionados a los proyectos
+    grupos = models.Grupo.objects.filter(id_proyecto__in=proyectos)
+    if debug:
+        print("*************************")
+        print("*************************")
+        print("*************************")
+        print("grupos ",grupos)
+        print("*************************")
+        print("*************************")
+        print("*************************")
+
+    # Obtener procesos que pertenezcan a esos grupos
+    procesos = models.InfoProcesoCandidato.objects.filter(id_grupo__in=grupos)
+    if debug:
+        print("*************************")
+        print("*************************")
+        print("*************************")
+        print("procesos ",procesos)
+        print("*************************")
+        print("*************************")
+        print("*************************")
+
+    # Obtener candidatos cuyos procesos están en los grupos anteriores
+    data = []
+    for proceso in procesos:
+        data.append({
+            "candidato": proceso.id_candidato,
+            "proceso": proceso
+        })
+
+    return render(request, "seguimiento.html", {"candidatos_info": data})
+
+
 
 
 """

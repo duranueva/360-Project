@@ -294,3 +294,8 @@ class Usuario(models.Model):
             return usuario.id_centro_evaluador
         except cls.DoesNotExist:
             return None
+    
+    @staticmethod
+    def get_id_ce__from_actual_user(id_usuario):
+        usuario = Usuario.objects.get(id=id_usuario)
+        return usuario.id_centro_evaluador

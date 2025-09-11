@@ -64,12 +64,27 @@ class InfoProcesoCandidato(models.Model):
         db_table = 'info_proceso_candidato'
 
 class Grupo(models.Model):
-    # define aquí los campos de tu tabla Grupo
     nombre = models.CharField(max_length=100)
+    id_proyecto = models.ForeignKey('Proyecto', on_delete=models.SET_NULL, null=True, db_column='id_proyecto')
 
     class Meta:
         managed = False
         db_table = 'grupo'
+
+class Proyecto(models.Model):
+    nombre = models.CharField(max_length=100)
+    id_ce = models.ForeignKey('CentroEvaluador', on_delete=models.SET_NULL, null=True, db_column='id_ce')
+
+    class Meta:
+        managed = False
+        db_table = 'proyecto'
+
+class CentroEvaluador(models.Model):
+    nombre = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'centro_evaluador'
 
 def query_all_table__candidato():
     with connection.cursor() as cursor:
