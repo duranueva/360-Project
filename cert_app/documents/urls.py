@@ -16,7 +16,8 @@ urlpatterns = [
 
     # Sección "Proyectos"
     path("proyectos/", views.proyectos, name="proyectos"),
-    path("grupos/", views.grupos, name="grupos"),
+    #path("grupos/", views.grupos, name="grupos"),
+    path("grupos/<int:proyecto_id>/", views.grupos, name="grupos"),
     path("candidatos/", views.candidatos, name="candidatos"),
     path("candidato_n/", views.candidato_n, name="candidato_n"),
 ]

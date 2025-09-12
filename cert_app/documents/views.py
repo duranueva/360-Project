@@ -319,6 +319,33 @@ def seguimiento(request,debug=True):
     """
         https://chatgpt.com/share/68929281-4d54-800f-a451-01921c879339
     """
+    
+    if request.method == "POST":
+        if request.FILES.get("ine"):
+            seg_aux_ine(request)
+        elif request.FILES.get("foto"):
+            seg_aux_foto(request)
+        elif request.FILES.get("curp"):
+            seg_aux_curp(request)
+        elif request.FILES.get("portada"):
+            seg_aux_portada(request)
+        elif request.FILES.get("indice"):
+            seg_aux_indice(request)
+        elif request.FILES.get("carta_recepcion_docs"):
+            seg_aux_carta_recepcion(request)
+        elif request.FILES.get("reporte_autenticidad"):
+            seg_aux_reporte_autenticidad(request)
+        elif request.FILES.get("triptico_derechos_img"):
+            seg_aux_triptico_derechos(request)
+        elif request.FILES.get("encuesta_satisfaccion"):
+            seg_aux_encuesta_satisfaccion(request)
+        elif request.FILES.get("cedula_evaluacion"):
+            seg_aux_cedula_evaluacion(request)
+
+        elif request.POST.get("correo"):
+            seg_aux_correo(request)
+        # if portada ...
+
 
     id_usuario = request.user.id
     id_ce = Usuario.get_id_ce__from_actual_user(id_usuario)
@@ -382,14 +409,30 @@ def seguimiento(request,debug=True):
 """
 @login_required
 def proyectos(request):
-    proyectos = ['Naucalpan', 'Xalapa', 'Morelos']
-    return render(request, 'proyectos.html', {'proyectos': proyectos, 'active_section': 'proyectos'})
-    #return render(request,"proyectos.html")
+    id_usuario = request.user.id
+    id_ce = Usuario.get_id_ce__from_actual_user(id_usuario)
+    proyectos = models.Proyecto.objects.filter(id_ce=id_ce)
 
-@login_required
+    return render(request, 'proyectos.html', {
+        'proyectos': proyectos,
+        'active_section': 'proyectos'
+    })
+
+"""@login_required
 def grupos(request):
     grupos = ['Grupo 1', 'Grupo 2', 'Grupo 3']
-    return render(request,"grupos.html", {'grupos': grupos, 'active_section': 'proyectos'})
+    return render(request,"grupos.html", {'grupos': grupos, 'active_section': 'proyectos'})"""
+
+@login_required
+def grupos(request, proyecto_id):
+    grupos = models.Grupo.objects.filter(id_proyecto=proyecto_id)
+    proyecto = models.Proyecto.objects.get(id=proyecto_id)
+
+    return render(request, "grupos.html", {
+        'grupos': grupos,
+        'proyecto': proyecto,
+        'active_section': 'proyectos'
+    })
 
 @login_required
 def candidatos(request):
