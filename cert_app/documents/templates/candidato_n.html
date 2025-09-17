@@ -1,0 +1,49 @@
+{% extends 'base_doc.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+        Proyectos > {{ proceso.id_grupo.id_proyecto.nombre }} > {{ proceso.id_grupo.nombre }} > {{ candidato.nombre }}
+    </h2>
+</div>
+
+<div class="space-y-6">
+  <!-- Tabla -->
+  <div class="overflow-x-auto bg-[#D9D9D9] rounded-md p-4 shadow max-w-7xl mx-auto">
+    <table class="min-w-full text-left text-sm text-black">
+      <thead class="border-b border-gray-400">
+        <tr>
+          <th class="px-4 py-2">Candidato</th>
+          <th class="px-4 py-2">Documento</th>
+          <th class="px-4 py-2">Realizado</th>
+          <th class="px-4 py-2">Acción</th>
+          <th class="px-4 py-2">Check</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-t border-gray-300 hover:bg-gray-200">
+          <td class="px-4 py-2">{{ candidato.nombre }}</td>
+          <td class="px-4 py-2">CURP</td>
+          <td class="px-4 py-2">{% if candidato.curp %}✅{% else %}❌{% endif %}</td>
+          <td class="px-4 py-2">Descargar / Subir</td>
+          <td class="px-4 py-2"><input type="checkbox" /></td>
+        </tr>
+        <tr class="border-t border-gray-300 hover:bg-gray-200">
+          <td class="px-4 py-2">{{ candidato.nombre }}</td>
+          <td class="px-4 py-2">INE</td>
+          <td class="px-4 py-2">{% if candidato.ine %}✅{% else %}❌{% endif %}</td>
+          <td class="px-4 py-2">Descargar / Subir</td>
+          <td class="px-4 py-2"><input type="checkbox" /></td>
+        </tr>
+        <tr class="border-t border-gray-300 hover:bg-gray-200">
+          <td class="px-4 py-2">{{ candidato.nombre }}</td>
+          <td class="px-4 py-2">Foto</td>
+          <td class="px-4 py-2">{% if candidato.foto %}✅{% else %}❌{% endif %}</td>
+          <td class="px-4 py-2">Descargar / Subir</td>
+          <td class="px-4 py-2"><input type="checkbox" /></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

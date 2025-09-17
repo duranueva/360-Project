@@ -18,6 +18,8 @@ urlpatterns = [
     path("proyectos/", views.proyectos, name="proyectos"),
     #path("grupos/", views.grupos, name="grupos"),
     path("grupos/<int:proyecto_id>/", views.grupos, name="grupos"),
-    path("candidatos/", views.candidatos, name="candidatos"),
-    path("candidato_n/", views.candidato_n, name="candidato_n"),
+    #path("candidatos/", views.candidatos, name="candidatos"),
+    path('candidatos/<int:grupo_id>/', views.candidatos, name='candidatos'),
+    path('candidato/<int:candidato_id>/', views.candidato_n, name='candidato_n'),
+    #path("candidato_n/", views.candidato_n, name="candidato_n"),
 ]

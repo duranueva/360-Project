@@ -418,11 +418,6 @@ def proyectos(request):
         'active_section': 'proyectos'
     })
 
-"""@login_required
-def grupos(request):
-    grupos = ['Grupo 1', 'Grupo 2', 'Grupo 3']
-    return render(request,"grupos.html", {'grupos': grupos, 'active_section': 'proyectos'})"""
-
 @login_required
 def grupos(request, proyecto_id):
     grupos = models.Grupo.objects.filter(id_proyecto=proyecto_id)
@@ -435,13 +430,43 @@ def grupos(request, proyecto_id):
     })
 
 @login_required
-def candidatos(request):
-    candidatos = ['Israel Razo', 'Jean Duran', 'Regina G']
-    return render(request,"candidatos.html", {'candidatos': candidatos, 'active_section': 'proyectos'})
+def candidatos(request, grupo_id):
+    grupo = models.Grupo.objects.get(id=grupo_id)
+
+    # Obtener procesos que pertenecen al grupo
+    procesos = models.InfoProcesoCandidato.objects.filter(id_grupo=grupo)
+
+    # Construir la data de candidatos con su proceso
+    data = []
+    for proceso in procesos:
+        data.append({
+            "candidato": proceso.id_candidato,
+            "proceso": proceso
+        })
+
+    return render(request, "candidatos.html", {
+        "candidatos_info": data,
+        "grupo": grupo,
+        "active_section": "proyectos"
+    })
+
+"""@login_required
+def candidato_n(request):
+    return render(request,"candidato_n.html", {'active_section': 'proyectos'})"""
 
 @login_required
-def candidato_n(request):
-    return render(request,"candidato_n.html", {'active_section': 'proyectos'})
+def candidato_n(request, candidato_id):
+    candidato = models.Candidato.objects.get(id=candidato_id)
+    try:
+        proceso = models.InfoProcesoCandidato.objects.get(id_candidato=candidato)
+    except models.InfoProcesoCandidato.DoesNotExist:
+        proceso = None
+
+    return render(request, "candidato_n.html", {
+        "candidato": candidato,
+        "proceso": proceso,
+        "active_section": "proyectos"
+    })
 
 
 """

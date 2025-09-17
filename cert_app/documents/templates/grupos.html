@@ -16,7 +16,7 @@
     <div class="flex gap-16 mb-12 flex-wrap">
         {% for grupo in grupos %}
             {% comment %} <a class="flex flex-col items-center group"> {% endcomment %}
-            <a href="{% url 'candidatos' %}" class="flex flex-col items-center group">
+            <a href="{% url 'candidatos' grupo.id %}" class="flex flex-col items-center group">
                 <div class="bg-black text-white w-20 h-20 flex items-center justify-center rounded-md shadow-md group-hover:scale-105 transition">
                     ➡️
                 </div>
