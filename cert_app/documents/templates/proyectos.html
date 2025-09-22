@@ -26,3 +26,52 @@
 
 </div>
 {% endblock %}
+
+{% block footer %}
+<a href="#"
+    onclick="abrirModalProyecto()"
+    class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+    Agregar Proyecto
+</a>
+
+<!-- Modal Proyecto -->
+<div id="modalProyecto" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Agregar Proyecto</h2>
+    <form method="POST" action="{% url 'proyectos' %}" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Nombre del Proyecto:</label>
+        <input type="text" name="nombre" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">Estándar de Competencia (EC):</label>
+        <select name="id_ec" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+            <option value="" disabled selected>Selecciona un EC</option>
+            {% for ec in ecs %}
+            <option value="{{ ec.id }}">{{ ec.nombre }} - Código: ({{ ec.codigo }})</option>
+            {% endfor %}
+        </select>
+        </div>
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalProyecto()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function abrirModalProyecto() {
+    document.getElementById('modalProyecto').classList.remove('hidden');
+  }
+
+  function cerrarModalProyecto() {
+    document.getElementById('modalProyecto').classList.add('hidden');
+  }
+</script>
+{% endblock %}

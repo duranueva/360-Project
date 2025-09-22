@@ -10,10 +10,14 @@
         {{ proyecto.nombre }}
     </h2>
 
-    {% comment %} </center> {% endcomment %}
-
     <!-- Grupos con loop -->
     <div class="flex gap-16 mb-12 flex-wrap">
+        <p class="text-center text-500">Este proyecto pertenece a el Estandar de Competencia: {{proyecto.id_ec.nombre}} </p>
+        <p class="text-500 w-full">
+            Este proyecto pertenece a el Estandar de Competencia: {{ proyecto.id_ec.nombre }}
+        </p>
+        
+        
         {% for grupo in grupos %}
             {% comment %} <a class="flex flex-col items-center group"> {% endcomment %}
             <a href="{% url 'candidatos' grupo.id %}" class="flex flex-col items-center group">
@@ -29,4 +33,46 @@
     </div>
 
 </div>
+{% endblock %}
+
+{% block footer %}
+<a href="#"
+    onclick="abrirModalGrupo()"
+    class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+    Agregar Grupo
+</a>
+
+<!-- Modal Grupo -->
+<div id="modalGrupo" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Agregar Grupo</h2>
+    {% comment %} <form method="POST" action="{% url 'grupos' %}" class="space-y-4"> {% endcomment %}
+    <form method="POST" action="{% url 'grupos' proyecto.id %}" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Nombre del Grupo:</label>
+        <input type="text" name="nombre" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalGrupo()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function abrirModalGrupo() {
+    document.getElementById('modalGrupo').classList.remove('hidden');
+  }
+
+  function cerrarModalGrupo() {
+    document.getElementById('modalGrupo').classList.add('hidden');
+  }
+</script>
 {% endblock %}

@@ -133,7 +133,9 @@ def estandares(request):
             ).first()
 
             if ec:
-                if id_ce:
+                messages.success(request, "EC creado exitosamente.")
+
+                """if id_ce:
                     id_ec = ec.id
                     ce_ec_success, ce_ec_message = models.CeEc.crear(id_ce, id_ec)
                     if ce_ec_success:
@@ -141,9 +143,9 @@ def estandares(request):
                     else:
                         messages.error(request, f"EC created but CE-EC relationship failed: {ce_ec_message}")
                 else:
-                    messages.error(request, "EC created but no Centro Evaluador found for this user")
+                    messages.error(request, "EC created but no Centro Evaluador found for this user")"""
             else:
-                messages.error(request, "EC created but could not be found afterwards")
+                messages.error(request, "EC no pudo ser creado.")
             
             return redirect('estandares')
         else:

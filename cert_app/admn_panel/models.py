@@ -1,4 +1,4 @@
-from django.db import connection
+from django.db import connection, IntegrityError
 from django.db.utils import DatabaseError
 from django.db import models
 from django.utils import timezone
@@ -121,16 +121,6 @@ class EstandarCompetencia:
 
 
 
-class Grupo(models.Model):
-    nombre = models.CharField(max_length=255, blank=True, null=True)
-    fecha_creacion = models.DateField(auto_now_add=False, blank=True, null=True)
-    id_estandar_de_competencia = models.IntegerField(blank=True, null=True)
-    id_proyecto = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        managed = False  # Prevents Django from creating/migrating this table
-        db_table = 'grupo'
-
 class Candidato(models.Model):
     fecha_creacion = models.DateField(auto_now_add=False, blank=True, null=True)
     nombre = models.CharField(max_length=255, blank=True, null=True)
@@ -180,7 +170,7 @@ class CeEc(models.Model):
     @staticmethod
     def crear(id_ce, id_ec):
         """
-        Creates a new CE-EC relationship in the database
+        Creates a new CE-EC relationship in the database if it doesn't already exist.
         
         Args:
             id_ce: ID of the evaluation center
@@ -197,7 +187,10 @@ class CeEc(models.Model):
                 """, [id_ce, id_ec])
             
             return True, "The CE-EC relationship was added successfully."
-            
+
+        except IntegrityError:
+            return False, "The CE-EC relationship already exists."
+
         except DatabaseError as e:
             return False, f"Error adding the relationship: {str(e)}"
 

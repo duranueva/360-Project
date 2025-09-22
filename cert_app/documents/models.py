@@ -74,6 +74,7 @@ class Grupo(models.Model):
 class Proyecto(models.Model):
     nombre = models.CharField(max_length=100)
     id_ce = models.ForeignKey('CentroEvaluador', on_delete=models.SET_NULL, null=True, db_column='id_ce')
+    id_ec = models.ForeignKey('admn_panel.EC', on_delete=models.SET_NULL, null=True, db_column='id_ec')
 
     class Meta:
         managed = False
