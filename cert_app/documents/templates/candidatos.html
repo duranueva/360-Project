@@ -3,15 +3,13 @@
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <h2 class="text-2xl font-semibold text-gray-800 mb-4 min-h-[2.5rem] flex items-center">
-        <a href="{% url 'proyectos' %}" class="text-gray-800 font-semibold hover:bg-[#D1D1D1] transition px-2 py-1 rounded inline-block">
+        {% comment %} <a href="{% url 'proyectos' %}" class="text-gray-800 font-semibold hover:bg-[#D1D1D1] transition px-2 py-1 rounded inline-block">
             Proyectos
         </a>
-        <span class="mx-1">></span>
+        <span class="mx-1">></span> {% endcomment %}
         <span class="text-gray-800 font-semibold">{{ grupo.id_proyecto.nombre }}</span>
         <span class="mx-1">></span>
         <span class="text-gray-800 font-semibold">{{ grupo.nombre }}</span>
-        <span class="mx-1">></span>
-        <span class="text-gray-800 font-semibold">Candidatos</span>
     </h2>
 
     <!-- Candidatos con loop -->
@@ -22,7 +20,7 @@
                 <div class="bg-black text-white w-20 h-20 flex items-center justify-center rounded-md shadow-md group-hover:scale-105 transition">
                     ➡️
                 </div>
-                <span class="mt-2 text-gray-700 font-medium">{{ item.candidato.nombre }}</span>
+                <span class="mt-2 text-gray-700 font-medium">{{ item.candidato.nombre }} {{ item.candidato.ap_paterno }} {{ item.candidato.ap_materno }}</span>
             </a>
         {% empty %}
             <p class="text-center text-gray-500">No hay candidatos disponibles para este grupo.</p>
@@ -31,3 +29,53 @@
 </div>
 {% endblock %}
 
+
+{% block footer %}
+<a href="#"
+    onclick="abrirModalCandidato()"
+    class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+    Agregar Candidato
+</a>
+
+<!-- Modal Candidato -->
+<div id="modalCandidato" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Agregar Candidato</h2>
+    {% comment %} <form method="POST" action="{% url 'Candidato_n' %}" class="space-y-4"> {% endcomment %}
+    <form method="POST" action="{% url 'candidatos' grupo.id %}" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Nombre(s):</label>
+        <input type="text" name="nombre" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">Apellido Paterno</label>
+        <input type="text" name="apellido_paterno" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">Apellido Materno:</label>
+        <input type="text" name="apellido_materno" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalCandidato()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function abrirModalCandidato() {
+    document.getElementById('modalCandidato').classList.remove('hidden');
+  }
+
+  function cerrarModalCandidato() {
+    document.getElementById('modalCandidato').classList.add('hidden');
+  }
+</script>
+{% endblock %}

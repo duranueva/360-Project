@@ -3,16 +3,16 @@
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <h2 class="text-2xl font-semibold text-gray-800 mb-4 min-h-[2.5rem] flex items-center">
-        <a href="{% url 'proyectos' %}" class="text-gray-800 font-semibold hover:bg-[#D1D1D1] transition px-2 py-1 rounded inline-block">
+        {% comment %} <a href="{% url 'proyectos' %}" class="text-gray-800 font-semibold hover:bg-[#D1D1D1] transition px-2 py-1 rounded inline-block">
             Proyectos
-        </a>
-        <span class="mx-1">></span>
+        </a> 
+        <span class="mx-1">></span> {% endcomment %}
         {{ proyecto.nombre }}
     </h2>
 
     <!-- Grupos con loop -->
     <div class="flex gap-16 mb-12 flex-wrap">
-        <p class="text-center text-500">Este proyecto pertenece a el Estandar de Competencia: {{proyecto.id_ec.nombre}} </p>
+        {% comment %} <p class="text-center text-500">Este proyecto pertenece a el Estandar de Competencia: {{proyecto.id_ec.nombre}} </p> {% endcomment %}
         <p class="text-500 w-full">
             Este proyecto pertenece a el Estandar de Competencia: {{ proyecto.id_ec.nombre }}
         </p>

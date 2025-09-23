@@ -22,11 +22,11 @@ def seg_aux_ine(request):
     if ine_file and candidato_id:
         if ine_file.content_type.startswith("text"):
             print("❌ Archivo no válido para campo binario: INE")
-            return redirect("seguimiento")
+            messages.error(request, f"❌ Archivo no válido para campo binario: INE")
         candidato = models.Candidato.objects.get(id=candidato_id)
         candidato.ine = ine_file.read()
         candidato.save()
-        return redirect("seguimiento")
+        messages.success(request, f"INE agregado correctamente")
 
 def seg_aux_foto(request):
     foto_file = request.FILES.get("foto")
@@ -36,11 +36,11 @@ def seg_aux_foto(request):
     if foto_file and candidato_id:
         if foto_file.content_type.startswith("text"):
             print("❌ Archivo no válido para campo binario: FOTO")
-            return redirect("seguimiento")
+            messages.error(request, f"❌ Archivo no válido para campo binario: FOTO")
         candidato = models.Candidato.objects.get(id=candidato_id)
         candidato.foto = foto_file.read()
         candidato.save()
-        return redirect("seguimiento")
+        messages.success(request, f"Foto agregada correctamente")
 
 def seg_aux_curp(request):
     curp_file = request.FILES.get("curp")
@@ -50,11 +50,11 @@ def seg_aux_curp(request):
     if curp_file and candidato_id:
         if curp_file.content_type.startswith("text"):
             print("❌ Archivo no válido para campo binario: CURP")
-            return redirect("seguimiento")
+            messages.error(request, f"❌ Archivo no válido para campo binario: CURP")
         candidato = models.Candidato.objects.get(id=candidato_id)
         candidato.curp = curp_file.read()
         candidato.save()
-        return redirect("seguimiento")
+        messages.success(request, f"CURP agregado correctamente")
 
 def seg_aux_portada(request):
     portada_file = request.FILES.get("portada")
@@ -64,26 +64,27 @@ def seg_aux_portada(request):
     if portada_file and candidato_id:
         if portada_file.content_type.startswith("text"):
             print("❌ Archivo no válido para campo binario: PORTADA")
-            return redirect("seguimiento")
+            messages.error(request, f"❌ Archivo no válido para campo binario: PORTADA")
         try:
             proceso = models.InfoProcesoCandidato.objects.get(id_candidato_id=candidato_id)
         except models.InfoProcesoCandidato.DoesNotExist:
             print("❌ No existe InfoProcesoCandidato para el candidato")
-            return redirect("seguimiento")
+            messages.error(request, f"❌ No existe InfoProcesoCandidato para el candidato")
         proceso.portada = portada_file.read()
         proceso.save()
-        return redirect("seguimiento")
+        messages.success(request, f"Portada agregado correctamente")
 
 def seg_aux_correo(request):
     correo = request.POST.get("correo")
     candidato_id = request.POST.get("candidato_id")
-    print(">> CORREO:", correo)
+    print(">> CORREO:_", correo)
     print(">> CANDIDATO ID:", candidato_id)
+    
     if correo and candidato_id:
         candidato = models.Candidato.objects.get(id=candidato_id)
         candidato.correo = correo
         candidato.save()
-        return redirect("seguimiento")
+        messages.success(request, f"Correo agregado exitosamente.")
 
 def seg_aux_indice(request):
     indice_file = request.FILES.get("indice")
@@ -93,11 +94,11 @@ def seg_aux_indice(request):
     if indice_file and candidato_id:
         if indice_file.content_type.startswith("text"):
             print("❌ Archivo no válido para campo binario: INDICE")
-            return redirect("seguimiento")
+            messages.error(request, f"❌ Archivo no válido para campo binario: INDICE")
         proceso, _ = models.InfoProcesoCandidato.objects.get_or_create(id_candidato_id=candidato_id)
         proceso.indice = indice_file.read()
         proceso.save()
-        return redirect("seguimiento")
+        messages.success(request, f"Indice agregado correctamenete")
 
 def seg_aux_carta_recepcion(request):
     file = request.FILES.get("carta_recepcion_docs")
@@ -107,15 +108,15 @@ def seg_aux_carta_recepcion(request):
             proceso = models.InfoProcesoCandidato.objects.get(id_candidato_id=candidato_id)
         except models.InfoProcesoCandidato.DoesNotExist:
             print("❌ Proceso no encontrado")
-            return redirect("seguimiento")
+            messages.error(request, f"❌ Proceso no encontrado")
 
         if file.content_type.startswith("text"):
             print("❌ Archivo no válido para campo binario: carta_recepcion_docs")
-            return redirect("seguimiento")
+            messages.error(request, f"❌ Archivo no válido para campo binario: carta_recepcion_docs")
 
         proceso.carta_recepcion_docs = file.read()
         proceso.save()
-    return redirect("seguimiento")
+        messages.success(request, f"Carta Recepcion de Documentos agregada correctamente")
 
 def seg_aux_reporte_autenticidad(request):
     file = request.FILES.get("reporte_autenticidad")
@@ -126,17 +127,18 @@ def seg_aux_reporte_autenticidad(request):
     if file and candidato_id:
         if file.content_type.startswith("text"):
             print("❌ Archivo no válido para campo binario: REPORTE AUTENTICIDAD")
-            return redirect("seguimiento")
+            messages.error(request, f"❌ Archivo no válido para campo binario: REPORTE AUTENTICIDAD")
 
         try:
             proceso = models.InfoProcesoCandidato.objects.get(id_candidato_id=candidato_id)
         except models.InfoProcesoCandidato.DoesNotExist:
             print("❌ Proceso no encontrado.")
-            return redirect("seguimiento")
+            messages.error(request, f"❌ Proceso no encontrado.")
+            
 
         proceso.reporte_autenticidad = file.read()
         proceso.save()
-        return redirect("seguimiento")
+        messages.success(request, f"Reporte de Autenticidad agregado correctamente")
 
 def seg_aux_triptico_derechos(request):
     triptico_file = request.FILES.get("triptico_derechos_img")
@@ -147,17 +149,17 @@ def seg_aux_triptico_derechos(request):
     if triptico_file and candidato_id:
         if triptico_file.content_type.startswith("text"):
             print("❌ Archivo no válido para campo binario: TRIPTICO DERECHOS")
-            return redirect("seguimiento")
+            messages.error(request, f"❌ Archivo no válido para campo binario: TRIPTICO DERECHOS")
         
         try:
             proceso = models.InfoProcesoCandidato.objects.get(id_candidato_id=candidato_id)
         except models.InfoProcesoCandidato.DoesNotExist:
             print("❌ No existe InfoProcesoCandidato")
-            return redirect("seguimiento")
+            messages.error(request, f"❌ No existe InfoProcesoCandidato")
         
         proceso.triptico_derechos_img = triptico_file.read()
         proceso.save()
-        return redirect("seguimiento")
+        messages.success(request, f"Triptico de Derechos agregado correctamente")
 
 def seg_aux_encuesta_satisfaccion(request):
     archivo = request.FILES.get("encuesta_satisfaccion")
@@ -168,15 +170,15 @@ def seg_aux_encuesta_satisfaccion(request):
     if archivo and candidato_id:
         if archivo.content_type.startswith("text"):
             print("❌ Archivo no válido para campo binario: ENCUESTA SATISFACCION")
-            return redirect("seguimiento")
+            messages.error(request, f"❌ Archivo no válido para campo binario: ENCUESTA SATISFACCION")
         try:
             proceso = models.InfoProcesoCandidato.objects.get(id_candidato_id=candidato_id)
         except models.InfoProcesoCandidato.DoesNotExist:
             print("❌ No existe InfoProcesoCandidato para el candidato")
-            return redirect("seguimiento")
+            messages.error(request, f"❌ No existe InfoProcesoCandidato para el candidato")
         proceso.encuesta_satisfaccion = archivo.read()
         proceso.save()
-        return redirect("seguimiento")
+        messages.success(request, f"Encuesta de Satisfacción agregada correctamente")
 
 def seg_aux_cedula_evaluacion(request):
     archivo = request.FILES.get("cedula_evaluacion")
@@ -187,15 +189,15 @@ def seg_aux_cedula_evaluacion(request):
     if archivo and candidato_id:
         if archivo.content_type.startswith("text"):
             print("❌ Archivo no válido para campo binario: CEDULA")
-            return redirect("seguimiento")
-
+            messages.error(request, f"❌ Archivo no válido para campo binario: CEDULA")
         try:
             proceso = models.InfoProcesoCandidato.objects.get(id_candidato_id=candidato_id)
             proceso.cedula_evaluacion = archivo.read()
             proceso.save()
         except models.InfoProcesoCandidato.DoesNotExist:
             print("❌ No se encontró el proceso para el candidato.")
-        return redirect("seguimiento")
+            messages.error(request, f"❌ No se encontró el proceso para el candidato.")
+        messages.success(request, f"Cedula de Evaluación agregado correctamente")
 
 @login_required
 def seguimiento(request,debug=True):
@@ -227,7 +229,9 @@ def seguimiento(request,debug=True):
 
         elif request.POST.get("correo"):
             seg_aux_correo(request)
-        # if portada ...
+        
+        
+        return redirect("seguimiento")
 
 
     id_usuario = request.user.id
@@ -352,6 +356,31 @@ def candidatos(request, grupo_id):
     # Obtener procesos que pertenecen al grupo
     procesos = models.InfoProcesoCandidato.objects.filter(id_grupo=grupo)
 
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        ap_p = request.POST.get('apellido_paterno')
+        ap_m = request.POST.get('apellido_materno')
+
+        if nombre and ap_p and ap_m:
+            nuevo_candidato = models.Candidato.objects.create(
+                nombre=nombre,
+                ap_paterno=ap_p,
+                ap_materno=ap_m
+            )
+
+            models.InfoProcesoCandidato.objects.create(
+                id_grupo=grupo,
+                id_candidato=nuevo_candidato
+            )
+
+            messages.success(request, f"Candidato {nombre} agregado exitosamente.")
+            return redirect('candidatos', grupo_id=grupo.id)  # Evita re-envíos en F5
+        else:
+            messages.error(request, "Por favor llena todos los campos.")
+
+
+
+
     # Construir la data de candidatos con su proceso
     data = []
     for proceso in procesos:
@@ -367,8 +396,40 @@ def candidatos(request, grupo_id):
     })
 
 @login_required
-def candidato_n(request, candidato_id):
+def candidato_n(request, candidato_id, debug=False):
     candidato = models.Candidato.objects.get(id=candidato_id)
+
+    if request.method == "POST":
+        if request.FILES.get("curp"):
+            seg_aux_curp(request)
+        elif request.FILES.get("ine"):
+            seg_aux_ine(request)
+        elif request.FILES.get("foto"):
+            seg_aux_foto(request)
+        elif request.FILES.get("portada"):
+            seg_aux_portada(request)
+        elif request.FILES.get("indice"):
+            seg_aux_indice(request)
+        elif request.FILES.get("carta_recepcion_docs"):
+            seg_aux_carta_recepcion(request)
+        elif request.FILES.get("reporte_autenticidad"):
+            seg_aux_reporte_autenticidad(request)
+        elif request.FILES.get("triptico_derechos_img"):
+            seg_aux_triptico_derechos(request)
+        elif request.FILES.get("encuesta_satisfaccion"):
+            seg_aux_encuesta_satisfaccion(request)
+        elif request.FILES.get("cedula_evaluacion"):
+            seg_aux_cedula_evaluacion(request)
+
+
+
+        elif request.POST.get("correo"):
+            seg_aux_correo(request)
+        
+
+
+        return redirect('candidato_n', candidato_id=candidato_id)
+
     try:
         proceso = models.InfoProcesoCandidato.objects.get(id_candidato=candidato)
     except models.InfoProcesoCandidato.DoesNotExist:

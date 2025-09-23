@@ -3,47 +3,688 @@
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <h2 class="text-2xl font-semibold text-gray-800 mb-4">
-        Proyectos > {{ proceso.id_grupo.id_proyecto.nombre }} > {{ proceso.id_grupo.nombre }} > {{ candidato.nombre }}
+        {{ proceso.id_grupo.id_proyecto.nombre }} > {{ proceso.id_grupo.nombre }} > {{ candidato.nombre }} {{ candidato.ap_paterno }} {{ candidato.ap_materno }}
     </h2>
 </div>
 
+{% comment %} 
+<div class="max-w-4xl mx-auto">
+  <!-- Header -->
+  <div class="grid [grid-template-columns:1fr_auto_1fr_auto_1fr] items-center text-center font-semibold py-2">
+    <div>Proyecto</div>
+    <div class="px-2">&gt;</div>
+    <div>Grupo</div>
+    <div class="px-2">&gt;</div>
+    <div>Candidato</div>
+  </div>
+
+  <!-- Data row -->
+  <div class="grid [grid-template-columns:1fr_auto_1fr_auto_1fr] items-center text-center py-3">
+    <div>{{ proceso.id_grupo.id_proyecto.nombre }}</div>
+    <div class="px-2"></div>
+    <div>{{ proceso.id_grupo.nombre }}</div>
+    <div class="px-2"></div>
+    <div>{{ candidato.nombre }}</div>
+  </div>
+</div>
+ {% endcomment %}
+
+
 <div class="space-y-6">
+
+
+
   <!-- Tabla -->
   <div class="overflow-x-auto bg-[#D9D9D9] rounded-md p-4 shadow max-w-7xl mx-auto">
     <table class="min-w-full text-left text-sm text-black">
-      <thead class="border-b border-gray-400">
+      <tbody>
+        <!-- Nombre candidato -->
+        <thead class="border-b border-gray-400">
+          <tr>
+            <th colspan="10" class="text-center py-4">{{ candidato.nombre }} {{ candidato.ap_paterno }} {{ candidato.ap_materno }}</th>
+          </tr>
+        </thead>
+
+        <!-- EC, Proyecto, Grupo -->
+        {% comment %} <tr>
+          <td colspan="10" class="text-center py-4">
+            EC: x. Proyecto: y. Grupo:
+            {% if proceso and proceso.id_grupo %}
+              {{ proceso.id_grupo.nombre }}
+            {% else %}
+              Sin grupo
+            {% endif %}
+          </td>
+        </tr> {% endcomment %}
+
+        <!-- Columnas -->
         <tr>
-          <th class="px-4 py-2">Candidato</th>
           <th class="px-4 py-2">Documento</th>
           <th class="px-4 py-2">Realizado</th>
           <th class="px-4 py-2">Acción</th>
-          <th class="px-4 py-2">Check</th>
         </tr>
-      </thead>
-      <tbody>
+
+        <!-- Correo -->
         <tr class="border-t border-gray-300 hover:bg-gray-200">
-          <td class="px-4 py-2">{{ candidato.nombre }}</td>
+          <td class="px-4 py-2">Correo</td>     
+          <td class="px-4 py-2">
+            {% if candidato.correo %} {{candidato.correo}} ✅ {% else %} ❌ {% endif %}
+          </td>
+          <td class="px-4 py-2">
+            <a href="#"
+              onclick="abrirModalCORREO({{ candidato.id }}, '{{ candidato.correo|default_if_none:"" }}')"
+              class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+              Agregar/Modificar
+            </a>
+          </td>
+        </tr>
+
+        <!-- CURP -->
+        <tr class="border-t border-gray-300 hover:bg-gray-200">
           <td class="px-4 py-2">CURP</td>
-          <td class="px-4 py-2">{% if candidato.curp %}✅{% else %}❌{% endif %}</td>
-          <td class="px-4 py-2">Descargar / Subir</td>
-          <td class="px-4 py-2"><input type="checkbox" /></td>
+          <td class="px-4 py-2">
+            {% if candidato.curp %} ✅ {% else %} ❌ {% endif %}
+          </td>
+          <td class="px-4 py-2">
+            <a href="#"
+              onclick="abrirModalCURP({{ candidato.id }})"
+              class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+              Agregar/Modificar
+            </a>
+            {% if candidato.curp %}
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Ver
+              </a>
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Descargar
+              </a>
+            {% endif %}
+          </td>
         </tr>
+
+        <!-- INE -->
         <tr class="border-t border-gray-300 hover:bg-gray-200">
-          <td class="px-4 py-2">{{ candidato.nombre }}</td>
           <td class="px-4 py-2">INE</td>
-          <td class="px-4 py-2">{% if candidato.ine %}✅{% else %}❌{% endif %}</td>
-          <td class="px-4 py-2">Descargar / Subir</td>
-          <td class="px-4 py-2"><input type="checkbox" /></td>
+          <td class="px-4 py-2">
+            {% if candidato.ine %} ✅ {% else %} ❌ {% endif %}
+          </td>
+          <td class="px-4 py-2">
+            <a href="#" 
+              onclick="abrirModalINE({{ candidato.id }})"
+              class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+              Agregar/Modificar
+            </a>
+            {% if candidato.ine %}
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Ver
+              </a>
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Descargar
+              </a>
+            {% endif %}
+          </td>
         </tr>
+
+        <!-- Foto -->
         <tr class="border-t border-gray-300 hover:bg-gray-200">
-          <td class="px-4 py-2">{{ candidato.nombre }}</td>
           <td class="px-4 py-2">Foto</td>
-          <td class="px-4 py-2">{% if candidato.foto %}✅{% else %}❌{% endif %}</td>
-          <td class="px-4 py-2">Descargar / Subir</td>
-          <td class="px-4 py-2"><input type="checkbox" /></td>
+          <td class="px-4 py-2">
+            {% if candidato.foto %} ✅ {% else %} ❌ {% endif %}
+          </td>
+          <td class="px-4 py-2">
+            <a href="#"
+              onclick="abrirModalFOTO({{ candidato.id }})"
+              class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+              Agregar/Modificar
+            </a>
+            {% if candidato.foto %}
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Ver
+              </a>
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Descargar
+              </a>
+            {% endif %}
+          </td>
         </tr>
+
+        <!-- Portada (usando InfoProcesoCandidato) -->
+        <tr class="border-t border-gray-300 hover:bg-gray-200">
+          <td class="px-4 py-2">Portada</td>
+          <td class="px-4 py-2">
+            {% if proceso and proceso.portada %} ✅ {% else %} ❌ {% endif %}
+          </td>
+          <td class="px-4 py-2">
+            <a href="#"
+              onclick="abrirModalPORTADA({{ candidato.id }})"
+              class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+              Agregar/Modificar
+            </a>
+            {% if proceso and proceso.portada %}
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Ver
+              </a>
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Descargar
+              </a>
+            {% endif %}
+          </td>
+        </tr>
+
+
+        <!-- Indice (usando InfoProcesoCandidato) -->
+        <tr class="border-t border-gray-300 hover:bg-gray-200">
+          <td class="px-4 py-2">Indice</td>
+          <td class="px-4 py-2">
+            {% if proceso and proceso.indice %} ✅ {% else %} ❌ {% endif %}
+          </td>
+          <td class="px-4 py-2">
+            <a href="#"
+              onclick="abrirModalINDICE({{ candidato.id }})"
+              class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+              Agregar/Modificar
+            </a>
+            {% if proceso and proceso.indice %}
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Ver
+              </a>
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Descargar
+              </a>
+            {% endif %}
+          </td>
+        </tr>
+        
+
+        <!-- Carta Recepción Documentos (usando InfoProcesoCandidato) -->
+        <tr class="border-t border-gray-300 hover:bg-gray-200">
+          <td class="px-4 py-2">Carta Recepción Documentos</td>
+          <td class="px-4 py-2">
+            {% if proceso and proceso.carta_recepcion_docs %} ✅ {% else %} ❌ {% endif %}
+          </td>
+          <td class="px-4 py-2">
+            <a href="#"
+              onclick="abrirModalCARTA({{ candidato.id }})"
+              class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+              Agregar/Modificar
+            </a>
+            {% if proceso and proceso.carta_recepcion_docs %}
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Ver
+              </a>
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Descargar
+              </a>
+            {% endif %}
+          </td>
+        </tr>
+
+        <!-- Reporte de Autenticidad (usando InfoProcesoCandidato) -->
+        <tr class="border-t border-gray-300 hover:bg-gray-200">
+          <td class="px-4 py-2">Reporte de Autenticidad</td>
+          <td class="px-4 py-2">
+            {% if proceso and proceso.reporte_autenticidad %} ✅ {% else %} ❌ {% endif %}
+          </td>
+          <td class="px-4 py-2">
+            <a href="#"
+              onclick="abrirModalREPORTE({{ candidato.id }})"
+              class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+              Agregar/Modificar
+            </a>
+            {% if proceso and proceso.reporte_autenticidad %}
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Ver
+              </a>
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Descargar
+              </a>
+            {% endif %}
+          </td>
+        </tr>
+
+        <!-- Triptico de Derechos (usando InfoProcesoCandidato) -->
+        <tr class="border-t border-gray-300 hover:bg-gray-200">
+          <td class="px-4 py-2">Triptico de Derechos</td>
+          <td class="px-4 py-2">
+            {% if proceso and proceso.triptico_derechos_img %} ✅ {% else %} ❌ {% endif %}
+          </td>
+          <td class="px-4 py-2">
+            <a href="#"
+              onclick="abrirModalTRIPTICO({{ candidato.id }})"
+              class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+              Agregar/Modificar
+            </a>
+            {% if proceso and proceso.triptico_derechos_img %}
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Ver
+              </a>
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Descargar
+              </a>
+            {% endif %}
+          </td>
+        </tr>
+
+        <!-- Encuesta de Satisfacción (usando InfoProcesoCandidato) -->
+        <tr class="border-t border-gray-300 hover:bg-gray-200">
+          <td class="px-4 py-2">Encuesta de Satisfacción</td>
+          <td class="px-4 py-2">
+            {% if proceso and proceso.encuesta_satisfaccion %} ✅ {% else %} ❌ {% endif %}
+          </td>
+          <td class="px-4 py-2">
+            <a href="#" 
+              onclick="abrirModalENCUESTA({{ candidato.id }})"
+              class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+              Agregar/Modificar
+            </a>
+            {% if proceso and proceso.encuesta_satisfaccion %}
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Ver
+              </a>
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Descargar
+              </a>
+            {% endif %}
+          </td>
+        </tr>
+
+        <!-- Cedula de Evaluación (usando InfoProcesoCandidato) -->
+        <tr class="border-t border-gray-300 hover:bg-gray-200">
+          <td class="px-4 py-2">Cedula de Evaluación</td>
+          <td class="px-4 py-2">
+            {% if proceso and proceso.cedula_evaluacion %} ✅ {% else %} ❌ {% endif %}
+          </td>
+          <td class="px-4 py-2">
+            <a href="#"
+              onclick="abrirModalCEDULA({{ candidato.id }})"
+              class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+              Agregar/Modificar
+            </a>
+            {% if proceso and proceso.cedula_evaluacion %}
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Ver
+              </a>
+              <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                Descargar
+              </a>
+            {% endif %}
+          </td>
+        </tr>
+
+          
+
       </tbody>
     </table>
   </div>
 </div>
+
+
+
+<!-- Modal INE -->
+<div id="modalINE" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Subir INE</h2>
+    <form id="formINE" method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Archivo INE:</label>
+        <input type="file" name="ine" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <input type="hidden" name="candidato_id" id="candidatoIdINE">
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalINE()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal FOTO -->
+<div id="modalFOTO" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Subir Foto</h2>
+    <form id="formFOTO" method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Archivo Foto:</label>
+        <input type="file" name="foto" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <input type="hidden" name="candidato_id" id="candidatoIdFOTO">
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalFOTO()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal CURP -->
+<div id="modalCURP" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Subir CURP</h2>
+    <form id="formCURP" method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Archivo CURP:</label>
+        <input type="file" name="curp" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <input type="hidden" name="candidato_id" id="candidatoIdCURP">
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalCURP()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal CORREO -->
+<div id="modalCORREO" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Modificar Correo</h2>
+    <form id="formCORREO" method="POST" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Correo electrónico:</label>
+        <input type="email" name="correo" id="correoInput" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <input type="hidden" name="candidato_id" id="candidatoIdCORREO">
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalCORREO()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal PORTADA -->
+<div id="modalPORTADA" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Subir Portada</h2>
+    <form id="formPORTADA" method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Archivo Portada:</label>
+        <input type="file" name="portada" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <input type="hidden" name="candidato_id" id="candidatoIdPORTADA">
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalPORTADA()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal INDICE -->
+<div id="modalINDICE" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Subir Índice</h2>
+    <form id="formINDICE" method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Archivo Índice:</label>
+        <input type="file" name="indice" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <input type="hidden" name="candidato_id" id="candidatoIdINDICE">
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalINDICE()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal CARTA -->
+<div id="modalCARTA" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Subir Carta Recepción</h2>
+    <form id="formCARTA" method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Archivo:</label>
+        <input type="file" name="carta_recepcion_docs" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <input type="hidden" name="candidato_id" id="candidatoIdCARTA">
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalCARTA()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal REPORTE AUTENTICIDAD -->
+<div id="modalREPORTE" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Subir Reporte de Autenticidad</h2>
+    <form id="formREPORTE" method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Archivo:</label>
+        <input type="file" name="reporte_autenticidad" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <input type="hidden" name="candidato_id" id="candidatoIdREPORTE">
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalREPORTE()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal TRIPTICO DERECHOS -->
+<div id="modalTRIPTICO" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Subir Tríptico de Derechos</h2>
+    <form id="formTRIPTICO" method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Archivo Tríptico:</label>
+        <input type="file" name="triptico_derechos_img" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <input type="hidden" name="candidato_id" id="candidatoIdTRIPTICO">
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalTRIPTICO()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal ENCUESTA SATISFACCION -->
+<div id="modalENCUESTA" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Subir Encuesta de Satisfacción</h2>
+    <form id="formENCUESTA" method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Archivo Encuesta:</label>
+        <input type="file" name="encuesta_satisfaccion" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <input type="hidden" name="candidato_id" id="candidatoIdENCUESTA">
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalENCUESTA()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal CEDULA EVALUACION -->
+<div id="modalCEDULA" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Subir Cédula de Evaluación</h2>
+    <form id="formCEDULA" method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Archivo:</label>
+        <input type="file" name="cedula_evaluacion" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <input type="hidden" name="candidato_id" id="candidatoIdCEDULA">
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalCEDULA()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+<script>
+
+  function abrirModalINE(candidatoId) {
+    document.getElementById('modalINE').classList.remove('hidden');
+    document.getElementById('candidatoIdINE').value = candidatoId;
+  }
+
+  function cerrarModalINE() {
+    document.getElementById('modalINE').classList.add('hidden');
+  }
+
+  function abrirModalFOTO(candidatoId) {
+    document.getElementById('modalFOTO').classList.remove('hidden');
+    document.getElementById('candidatoIdFOTO').value = candidatoId;
+  }
+
+  function cerrarModalFOTO() {
+    document.getElementById('modalFOTO').classList.add('hidden');
+  }
+
+  function abrirModalCURP(candidatoId) {
+    document.getElementById('modalCURP').classList.remove('hidden');
+    document.getElementById('candidatoIdCURP').value = candidatoId;
+  }
+
+  function cerrarModalCURP() {
+    document.getElementById('modalCURP').classList.add('hidden');
+  }
+
+  function abrirModalCORREO(candidatoId, correoActual) {
+    document.getElementById('modalCORREO').classList.remove('hidden');
+    document.getElementById('candidatoIdCORREO').value = candidatoId;
+    document.getElementById('correoInput').value = correoActual || '';
+  }
+
+  function cerrarModalCORREO() {
+    document.getElementById('modalCORREO').classList.add('hidden');
+  }
+
+  function abrirModalPORTADA(candidatoId) {
+    document.getElementById('modalPORTADA').classList.remove('hidden');
+    document.getElementById('candidatoIdPORTADA').value = candidatoId;
+  }
+
+  function cerrarModalPORTADA() {
+    document.getElementById('modalPORTADA').classList.add('hidden');
+  }
+
+  function abrirModalINDICE(candidatoId) {
+    document.getElementById('modalINDICE').classList.remove('hidden');
+    document.getElementById('candidatoIdINDICE').value = candidatoId;
+  }
+
+  function cerrarModalINDICE() {
+    document.getElementById('modalINDICE').classList.add('hidden');
+  }
+
+  function abrirModalCARTA(candidatoId) {
+    document.getElementById('modalCARTA').classList.remove('hidden');
+    document.getElementById('candidatoIdCARTA').value = candidatoId;
+  }
+
+  function cerrarModalCARTA() {
+    document.getElementById('modalCARTA').classList.add('hidden');
+  }
+
+  function abrirModalREPORTE(candidatoId) {
+    document.getElementById('modalREPORTE').classList.remove('hidden');
+    document.getElementById('candidatoIdREPORTE').value = candidatoId;
+  }
+
+  function cerrarModalREPORTE() {
+    document.getElementById('modalREPORTE').classList.add('hidden');
+  }
+
+  function abrirModalTRIPTICO(candidatoId) {
+    document.getElementById('modalTRIPTICO').classList.remove('hidden');
+    document.getElementById('candidatoIdTRIPTICO').value = candidatoId;
+  }
+
+  function cerrarModalTRIPTICO() {
+    document.getElementById('modalTRIPTICO').classList.add('hidden');
+  }
+
+  function abrirModalENCUESTA(candidatoId) {
+    document.getElementById('modalENCUESTA').classList.remove('hidden');
+    document.getElementById('candidatoIdENCUESTA').value = candidatoId;
+  }
+
+  function cerrarModalENCUESTA() {
+    document.getElementById('modalENCUESTA').classList.add('hidden');
+  }
+
+  function abrirModalCEDULA(candidatoId) {
+    document.getElementById('modalCEDULA').classList.remove('hidden');
+    document.getElementById('candidatoIdCEDULA').value = candidatoId;
+  }
+
+  function cerrarModalCEDULA() {
+    document.getElementById('modalCEDULA').classList.add('hidden');
+  }
+
+
+</script>
+{% endblock %}
+
+
+
+{% block footer %}
+<a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+  Crear Portafolio
+</a>
 {% endblock %}
