@@ -2,12 +2,14 @@
 
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Título -->
+  <h2 class="text-xl font-semibold text-center">PROYECTOS</h2>
     
-    <h2 class="text-2xl font-semibold text-gray-800 mb-4 min-h-[2.5rem] flex items-center">
-        <a href="{% url 'proyectos' %}" class="text-gray-800 font-semibold hover:bg-[#D1D1D1] transition px-2 py-1 rounded inline-block">
-            Proyectos
+    {% comment %} <h2 class="text-2xl font-semibold text-gray-800 mb-4 min-h-[2.5rem] flex items-center">
+        <a class="text-gray-800 font-semibold transition px-2 py-1 rounded inline-block">
+            Proyectos del Centro Evaluador
         </a>
-    </h2>
+    </h2> {% endcomment %}
 
 
     <!-- Proyectos con loop -->

@@ -3,7 +3,15 @@
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <h2 class="text-2xl font-semibold text-gray-800 mb-4">
-        {{ proceso.id_grupo.id_proyecto.nombre }} > {{ proceso.id_grupo.nombre }} > {{ candidato.nombre }} {{ candidato.ap_paterno }} {{ candidato.ap_materno }}
+        <a href="{% url 'grupos' proceso.id_grupo.id_proyecto.id %}" class="text-gray-800 font-semibold hover:bg-[#D1D1D1] transition px-2 py-1 rounded inline-block">
+            {{ proceso.id_grupo.id_proyecto.nombre }}
+        </a>
+        <span class="mx-1">></span>
+        <a href="{% url 'candidatos' proceso.id_grupo.id %}" class="text-gray-800 font-semibold hover:bg-[#D1D1D1] transition px-2 py-1 rounded inline-block">
+          {{ proceso.id_grupo.nombre }}
+        </a>
+        <span class="mx-1">></span>
+        {{ candidato.nombre }} {{ candidato.ap_paterno }} {{ candidato.ap_materno }}
     </h2>
 </div>
 

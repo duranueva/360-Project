@@ -46,19 +46,14 @@
             <!-- Nombre candidato -->
             <thead class="border-b border-gray-400">
               <tr>
-                <th colspan="10" class="text-center py-4">{{ candidato.nombre }}</th>
+                <th colspan="10" class="text-center py-4">{{ candidato.nombre }} {{ candidato.ap_paterno }} {{ candidato.ap_materno }}</th>
               </tr>
             </thead>
 
             <!-- EC, Proyecto, Grupo -->
             <tr>
               <td colspan="10" class="text-center py-4">
-                EC: x. Proyecto: y. Grupo:
-                {% if proceso and proceso.id_grupo %}
-                  {{ proceso.id_grupo.nombre }}
-                {% else %}
-                  Sin grupo
-                {% endif %}
+                EC: {{ proceso.id_grupo.id_proyecto.id_ec.nombre }} <b>></b> Proyecto: {{ proceso.id_grupo.id_proyecto.nombre }} <b>></b> Grupo: {{ proceso.id_grupo.nombre }}
               </td>
             </tr>
 

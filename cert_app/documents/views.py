@@ -4,6 +4,7 @@ from . import models
 from admn_panel.models import Usuario, EC, CeEc  # importa el modelo desde la app correspondiente
 from django.contrib import messages  # para mostrar mensajes opcionales
 from django.db import IntegrityError
+from django.db import transaction
 
 # Create your views here.
 @login_required
@@ -81,10 +82,14 @@ def seg_aux_correo(request):
     print(">> CANDIDATO ID:", candidato_id)
     
     if correo and candidato_id:
-        candidato = models.Candidato.objects.get(id=candidato_id)
-        candidato.correo = correo
-        candidato.save()
-        messages.success(request, f"Correo agregado exitosamente.")
+        try:
+            candidato = models.Candidato.objects.get(id=candidato_id)
+            candidato.correo = correo
+            candidato.save()
+            messages.success(request, "Correo agregado exitosamente.")
+        
+        except IntegrityError:
+            messages.error(request, "El correo que ingresas ya está registrado. Intenta con otro.")
 
 def seg_aux_indice(request):
     indice_file = request.FILES.get("indice")
@@ -296,22 +301,34 @@ def seguimiento(request,debug=True):
 """
 @login_required
 def proyectos(request):
-    id_usuario = request.user.id # Obtenemos id del usuario en sesión
-    id_ce = Usuario.get_id_ce__from_actual_user(id_usuario) # Obtenemos id del Centro Evaluador al que pertenece el usuario en sesión
+    id_usuario = request.user.id  # Usuario en sesión
+    id_ce = Usuario.get_id_ce__from_actual_user(id_usuario)  # Centro Evaluador
 
-    # Creamos record Proyecto, ligado a un Estandar de Competencia
     if request.method == 'POST':
-        nombre = request.POST.get('nombre')
-        id_ec = int(request.POST.get('id_ec')) # EC elegido
+        nombre = (request.POST.get('nombre') or '').strip()
+        id_ec = request.POST.get('id_ec')
 
         if nombre and id_ec:
-            # Intentar crear CeEc
-            success, ceec_msg = CeEc.crear(id_ce, id_ec)
+            try:
+                id_ec = int(id_ec)
+            except ValueError:
+                messages.error(request, 'ID de Estandar de Competencia inválido.')
+                return redirect('proyectos')
 
-            # Crear Proyecto relacionado al CE y EC
-            nuevo_proyecto = models.Proyecto(nombre=nombre, id_ce_id=id_ce, id_ec_id=id_ec)
-            nuevo_proyecto.save()
-            messages.success(request, 'Proyecto agregado exitosamente.')
+            # Verificar si ya existe el proyecto
+            proyecto, creado = models.Proyecto.objects.get_or_create(
+                nombre=nombre,
+                id_ce_id=id_ce,
+                id_ec_id=id_ec
+            )
+
+            if creado:
+                # Intentar crear CeEc solo si el proyecto es nuevo
+                success, ceec_msg = CeEc.crear(id_ce, id_ec)
+                messages.success(request, 'Proyecto agregado exitosamente.')
+            else:
+                messages.error(request, '❌ El nombre asignado para el Proyecto ya existe con ese Estandar de Competencia. Escoge uno diferente.')
+
             return redirect('proyectos')
         else:
             messages.error(request, 'Debes dar un nombre y asignar un Estandar de Competencia.')
@@ -326,6 +343,8 @@ def proyectos(request):
         'active_section': 'proyectos'
     })
 
+
+
 @login_required
 def grupos(request, proyecto_id):
     proyecto = get_object_or_404(models.Proyecto, id=proyecto_id)
@@ -333,12 +352,17 @@ def grupos(request, proyecto_id):
     if request.method == 'POST':
         nombre = (request.POST.get('nombre') or '').strip()
         if nombre:
-            # avoid duplicates if user double-submits
-            models.Grupo.objects.get_or_create(
+            grupo, created = models.Grupo.objects.get_or_create(
                 id_proyecto=proyecto,
                 nombre=nombre
             )
-        # PRG: redirect so refresh doesn't resubmit the POST
+            if created:
+                messages.success(request, "Grupo agregado correctamente")
+            else:
+                messages.error(request, "❌ El grupo ya existe en este proyecto")
+        else:
+            messages.error(request, "❌ El nombre no puede estar vacío")
+        
         return redirect('grupos', proyecto_id=proyecto.id)
 
     # GET
@@ -348,6 +372,7 @@ def grupos(request, proyecto_id):
         'proyecto': proyecto,
         'active_section': 'proyectos',
     })
+
 
 @login_required
 def candidatos(request, grupo_id):
@@ -373,7 +398,7 @@ def candidatos(request, grupo_id):
                 id_candidato=nuevo_candidato
             )
 
-            messages.success(request, f"Candidato {nombre} agregado exitosamente.")
+            messages.success(request, f"Candidato '{nombre} {ap_p} {ap_m}' agregado exitosamente.")
             return redirect('candidatos', grupo_id=grupo.id)  # Evita re-envíos en F5
         else:
             messages.error(request, "Por favor llena todos los campos.")
@@ -394,6 +419,84 @@ def candidatos(request, grupo_id):
         "grupo": grupo,
         "active_section": "proyectos"
     })
+
+
+"""
+@login_required
+def candidatos(request, grupo_id):
+    grupo = models.Grupo.objects.get(id=grupo_id)
+
+    # Obtener procesos que pertenecen al grupo
+    procesos = models.InfoProcesoCandidato.objects.filter(id_grupo=grupo)
+
+    if request.method == 'POST':
+        nombre  = (request.POST.get('nombre') or '').strip()
+        ap_p    = (request.POST.get('apellido_paterno') or '').strip()
+        ap_m    = (request.POST.get('apellido_materno') or '').strip()
+
+        if not (nombre and ap_p and ap_m):
+            messages.error(request, "Por favor llena todos los campos.")
+            return redirect('candidatos', grupo_id=grupo.id)
+        else:
+            candidato = models.Candidato.objects.filter(
+                nombre__iexact=nombre,
+                ap_paterno__iexact=ap_p,
+                ap_materno__iexact=ap_m
+            ).first()
+
+            if candidato:
+                # ¿Ya está ligado este candidato al grupo?
+                ya_asignado = models.InfoProcesoCandidato.objects.filter(
+                    id_grupo=grupo,
+                    id_candidato=candidato
+                ).exists()
+
+                
+                print("************")
+                print("************")
+                print("************")
+                print("************")
+                print(candidato)
+                print(ya_asignado)
+                print("************")
+                print("************")
+                print("************")
+                print("************")
+
+                if ya_asignado:
+                    messages.error(request, f"❌ El candidato {nombre} {ap_p} {ap_m} ya está en este grupo.")
+                    return redirect('candidatos', grupo_id=grupo.id)
+            
+            # Si no existe el candidato ligado al Grupo, lo creamos
+            nuevo_candidato = models.Candidato.objects.create(
+                nombre=nombre,
+                ap_paterno=ap_p,
+                ap_materno=ap_m
+            )
+            models.InfoProcesoCandidato.objects.create(
+                id_grupo=grupo,
+                id_candidato=nuevo_candidato
+            )
+            messages.success(request, f"Candidato '{nombre} {ap_p} {ap_m}' agregado exitosamente.")
+            return redirect('candidatos', grupo_id=grupo.id)
+
+    # Construir la data de candidatos con su proceso
+    data = []
+    for proceso in procesos:
+        data.append({
+            "candidato": proceso.id_candidato,
+            "proceso": proceso
+        })
+
+    return render(request, "candidatos.html", {
+        "candidatos_info": data,
+        "grupo": grupo,
+        "active_section": "proyectos"
+    })
+
+"""
+
+
 
 @login_required
 def candidato_n(request, candidato_id, debug=False):
@@ -455,4 +558,3 @@ def equipo(request):
 @login_required
 def creditos(request):
     return render(request,"creditos.html")
-
