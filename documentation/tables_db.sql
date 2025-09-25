@@ -1,8 +1,23 @@
+CREATE TABLE archivos_generales (
+    indice BYTEA
+);
+
+CREATE TABLE Logo_Emisor_Certificados (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    logo BYTEA
+);
+
 CREATE TABLE Centro_evaluador (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nombre VARCHAR,
     fecha_creacion DATE DEFAULT CURRENT_DATE,
-    logo_centro_evaluador BYTEA
+    logo_centro_evaluador BYTEA,
+    id_logo_emisor_cert INT,
+    cedula TEXT,
+    triptico_derechos_img BYTEA,
+    CONSTRAINT fk_logo_emisor
+        FOREIGN KEY (id_logo_emisor_cert)
+        REFERENCES Logo_Emisor_Certificados(id)
 );
 
 CREATE TABLE Usuario (
@@ -76,6 +91,8 @@ CREATE TABLE Estandar_de_competencia (
     codigo TEXT,
     id_examen_diagnostico INT,
     fecha_creacion DATE DEFAULT CURRENT_DATE,
+    plan_evaluacion BYTEA,
+    instrumento_evaluacion BYTEA,
     id_usuario_creador INT REFERENCES Usuario(id)
         ON DELETE SET NULL
         ON UPDATE CASCADE
@@ -145,13 +162,9 @@ CREATE TABLE Info_proceso_candidato (
     portada BYTEA,
     indice BYTEA,
     carta_recepcion_docs BYTEA,
-    fecha_registro_generado DATE,
+    ficha_registro_generado BYTEA,
     reporte_autenticidad BYTEA,
     triptico_derechos_img BYTEA,
-    plan_evaluacion BYTEA,
     encuesta_satisfaccion BYTEA,
-    instrumento_evaluacion BYTEA,
     cedula_evaluacion BYTEA
 );
-
-
