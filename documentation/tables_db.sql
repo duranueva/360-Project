@@ -1,34 +1,58 @@
+-- =========================================================
+-- Schema: cert_app_v2 / Modelo Relacional (PostgreSQL)
+-- =========================================================
+
+-- --------------------------
+-- Genereal tables
+-- --------------------------
+
 CREATE TABLE archivos_generales (
+    id     INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     indice BYTEA
 );
 
-CREATE TABLE Logo_Emisor_Certificados (
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    logo BYTEA
+-- --------------------------
+-- Core reference tables
+-- --------------------------
+
+CREATE TABLE logo_emisor_certificados (
+    id      INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    logo    BYTEA
 );
 
-CREATE TABLE Centro_evaluador (
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    nombre VARCHAR,
-    fecha_creacion DATE DEFAULT CURRENT_DATE,
-    logo_centro_evaluador BYTEA,
-    id_logo_emisor_cert INT,
-    cedula TEXT,
-    triptico_derechos_img BYTEA,
-    CONSTRAINT fk_logo_emisor
-        FOREIGN KEY (id_logo_emisor_cert)
-        REFERENCES Logo_Emisor_Certificados(id)
+CREATE TABLE centro_evaluador (
+    id                   INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nombre               TEXT NOT NULL,
+    fecha_creacion       DATE DEFAULT CURRENT_DATE,
+    logo_centro_evaluador  BYTEA,                
+    cedula               TEXT,
+    triptico_derechos BYTEA,               
+    id_logo_emisor_cert  INT                  
 );
 
-CREATE TABLE Usuario (
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    usuario VARCHAR UNIQUE,
-    contrasena VARCHAR,
-    fecha_creacion DATE DEFAULT CURRENT_DATE,
-    id_centro_evaluador INT REFERENCES Centro_evaluador(id)
-        ON DELETE SET NULL
-        ON UPDATE CASCADE
+ALTER TABLE centro_evaluador
+  ADD CONSTRAINT fk_ce_logo_emisor
+    FOREIGN KEY (id_logo_emisor_cert)
+    REFERENCES logo_emisor_certificados(id)
+    ON UPDATE CASCADE ON DELETE SET NULL;
+
+CREATE TABLE usuario (
+    id                    INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    usuario               TEXT NOT NULL UNIQUE,
+    contrasena            TEXT NOT NULL,
+    fecha_creacion        DATE DEFAULT CURRENT_DATE,
+    id_centro_evaluador   INT,                -- FK -> centro_evaluador
+    cedula                TEXT,
+    firma                 BYTEA,
+    nombre                TEXT,
+    correo                TEXT
 );
+
+ALTER TABLE usuario
+  ADD CONSTRAINT fk_usuario_ce
+    FOREIGN KEY (id_centro_evaluador)
+    REFERENCES centro_evaluador(id)
+    ON UPDATE CASCADE ON DELETE SET NULL;
 
 -- Trigger: normaliza "usuario" a minúsculas
 CREATE OR REPLACE FUNCTION normalizar_usuario()
@@ -44,127 +68,152 @@ BEFORE INSERT OR UPDATE ON Usuario
 FOR EACH ROW
 EXECUTE FUNCTION normalizar_usuario();
 
-
-CREATE TABLE Roles (
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    nombre VARCHAR
+CREATE TABLE roles (
+    id      INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nombre  TEXT NOT NULL
 );
 
-CREATE TABLE Permisos (
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    nombre VARCHAR
+CREATE TABLE permisos (
+    id      INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nombre  TEXT NOT NULL
 );
 
-CREATE TABLE Roles_usuarios (
-    id_usuario INT,
-    id_rol INT,
+-- Relación muchos-a-muchos: usuarios ↔ roles
+CREATE TABLE roles_usuarios (
+    id_usuario INT NOT NULL,
+    id_rol     INT NOT NULL,
     PRIMARY KEY (id_usuario, id_rol),
-    FOREIGN KEY (id_usuario) REFERENCES Usuario(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    FOREIGN KEY (id_rol) REFERENCES Roles(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (id_rol)     REFERENCES roles(id)   ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE Rol_permisos (
-    id_rol INT,
-    id_permiso INT,
+-- Relación muchos-a-muchos: roles ↔ permisos
+CREATE TABLE rol_permisos (
+    id_rol     INT NOT NULL,
+    id_permiso INT NOT NULL,
     PRIMARY KEY (id_rol, id_permiso),
-    FOREIGN KEY (id_rol) REFERENCES Roles(id)
+    FOREIGN KEY (id_rol)     REFERENCES roles(id)     
+        ON UPDATE CASCADE 
+        ON DELETE CASCADE,
+    FOREIGN KEY (id_permiso) REFERENCES permisos(id)  
+        ON UPDATE CASCADE 
         ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    FOREIGN KEY (id_permiso) REFERENCES Permisos(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
 );
 
-CREATE TABLE Logos (
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    logo_org_certificadora BYTEA,
-    logo_emisor_certificados BYTEA
-);
 
-CREATE TABLE Estandar_de_competencia (
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    nombre TEXT,
-    codigo TEXT,
-    id_examen_diagnostico INT,
-    fecha_creacion DATE DEFAULT CURRENT_DATE,
-    plan_evaluacion BYTEA,
-    instrumento_evaluacion BYTEA,
-    id_usuario_creador INT REFERENCES Usuario(id)
+
+
+-- --------------------------
+-- Catálogo de Estándares
+-- --------------------------
+
+CREATE TABLE estandar_de_competencia (
+    id                       INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nombre                   TEXT NOT NULL,
+    codigo                   TEXT NOT NULL,
+    id_examen_diagnostico    INT,
+    fecha_creacion           DATE DEFAULT CURRENT_DATE,
+    id_usuario_creador       INT,              -- FK -> usuario
+    instrumento_evaluacion   BYTEA,
+    plan_evaluacion          BYTEA,
+    FOREIGN KEY (id_usuario_creador) REFERENCES usuario(id)
+        ON UPDATE CASCADE 
         ON DELETE SET NULL
-        ON UPDATE CASCADE
 );
 
-CREATE TABLE CE_EC (
-    id_ce INT,
-    id_ec INT,
+-- Tabla puente: Centro Evaluador ↔ Estándar de Competencia (CE_EC)
+CREATE TABLE ce_ec (
+    id_ce INT NOT NULL,
+    id_ec INT NOT NULL,
     PRIMARY KEY (id_ce, id_ec),
-    FOREIGN KEY (id_ce) REFERENCES Centro_evaluador(id)
+    FOREIGN KEY (id_ce) REFERENCES centro_evaluador(id)       
+        ON UPDATE CASCADE 
+        ON DELETE CASCADE,
+    FOREIGN KEY (id_ec) REFERENCES estandar_de_competencia(id) 
+        ON UPDATE CASCADE 
         ON DELETE CASCADE
+);
+
+
+-- --------------------------
+-- Proyectos, Grupos
+-- --------------------------
+
+CREATE TABLE logos (
+    id                         INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    logo_org_certificador     BYTEA
+);
+
+CREATE TABLE proyecto (
+    id              INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nombre          VARCHAR,
+    fecha_creacion  DATE DEFAULT CURRENT_DATE,
+    id_ce           INT,
+    id_ec           INT,
+    id_logos        INT,
+    CONSTRAINT fk_proyecto_logos
+        FOREIGN KEY (id_logos) REFERENCES logos(id)
+        ON DELETE SET NULL
         ON UPDATE CASCADE,
-    FOREIGN KEY (id_ec) REFERENCES Estandar_de_competencia(id)
+    CONSTRAINT fk_proyecto_ce_ec
+        FOREIGN KEY (id_ce, id_ec) REFERENCES ce_ec(id_ce, id_ec)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
 
-CREATE TABLE Proyecto (
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    nombre VARCHAR,
-    fecha_creacion DATE DEFAULT CURRENT_DATE,
-    id_ce INT,
-    id_ec INT,
-    id_logos INT REFERENCES Logos(id)
-        ON DELETE SET NULL
-        ON UPDATE CASCADE,
-    FOREIGN KEY (id_ce, id_ec) REFERENCES CE_EC(id_ce, id_ec)
+CREATE TABLE grupo (
+    id               INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nombre           TEXT NOT NULL,
+    fecha_creacion   DATE DEFAULT CURRENT_DATE,
+    id_proyecto      INT NOT NULL,     -- FK -> proyecto
+    FOREIGN KEY (id_proyecto) REFERENCES proyecto(id)
+        ON UPDATE CASCADE 
         ON DELETE CASCADE
-        ON UPDATE CASCADE
 );
 
-CREATE TABLE Grupo (
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    nombre VARCHAR,
-    fecha_creacion DATE DEFAULT CURRENT_DATE,
-    id_estandar_de_competencia INT,
-    id_proyecto INT,
-    FOREIGN KEY (id_estandar_de_competencia) REFERENCES Estandar_de_competencia(id)
-        ON DELETE SET NULL
-        ON UPDATE CASCADE,
-    FOREIGN KEY (id_proyecto) REFERENCES Proyecto(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
+-- --------------------------
+-- Candidatos y su proceso
+-- --------------------------
+
+CREATE TABLE candidato (
+    id               INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    fecha_creacion   DATE DEFAULT CURRENT_DATE,
+    nombre           TEXT,
+    ap_paterno       TEXT,
+    ap_materno       TEXT,
+    correo           TEXT UNIQUE,
+    curp             BYTEA,
+    ine_frente       BYTEA,
+    ine_reverso      BYTEA,
+    foto             BYTEA,
+    firma            BYTEA
 );
 
-CREATE TABLE Candidato (
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    fecha_creacion DATE DEFAULT CURRENT_DATE,
-    nombre VARCHAR,
-    ap_paterno VARCHAR,
-    ap_materno VARCHAR,
-    correo VARCHAR UNIQUE,
-    curp VARCHAR,
-    foto BYTEA,
-    ine BYTEA
+CREATE TABLE info_proceso_candidato (
+    id                       INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id_candidato             INT NOT NULL,
+    id_grupo                 INT NOT NULL,
+    fecha_creacion           DATE DEFAULT CURRENT_DATE,
+
+    portada                          BYTEA,
+    carta_recepcion_docs             BYTEA,
+    ficha_registro              BYTEA,
+    reporte_autenticidad        BYTEA,
+    encuesta_satisfaccion       BYTEA,
+    cedula_evaluacion           BYTEA,
+    portafolio                  BYTEA,
+    instrumento_de_evaluacion   BYTEA,
+    plan_evaluacion             BYTEA,
+
+    toda_la_documentacion    BOOLEAN DEFAULT FALSE,
+
+    FOREIGN KEY (id_candidato) REFERENCES candidato(id)
+        ON UPDATE CASCADE 
+        ON DELETE CASCADE,
+    FOREIGN KEY (id_grupo)     REFERENCES grupo(id)
+        ON UPDATE CASCADE 
+        ON DELETE CASCADE
 );
 
-CREATE TABLE Info_proceso_candidato (
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    id_candidato INT REFERENCES Candidato(id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    id_grupo INT REFERENCES Grupo(id)
-        ON DELETE SET NULL
-        ON UPDATE CASCADE,
-    fecha_creacion DATE DEFAULT CURRENT_DATE,
-    portada BYTEA,
-    indice BYTEA,
-    carta_recepcion_docs BYTEA,
-    ficha_registro_generado BYTEA,
-    reporte_autenticidad BYTEA,
-    triptico_derechos_img BYTEA,
-    encuesta_satisfaccion BYTEA,
-    cedula_evaluacion BYTEA
-);
+
+
