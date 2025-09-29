@@ -4,6 +4,8 @@ from django.db import models
 from django.utils import timezone
 from django.db import connection, DatabaseError
 from django.contrib import messages
+from django.db import models
+from django.contrib.auth import get_user_model
 
 def get_all_ecs():
     try:
@@ -194,8 +196,7 @@ class CeEc(models.Model):
         except DatabaseError as e:
             return False, f"Error adding the relationship: {str(e)}"
 
-from django.db import models
-from django.contrib.auth import get_user_model
+
 
 User = get_user_model()
 

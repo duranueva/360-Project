@@ -7,34 +7,62 @@
   <h2 class="text-xl font-semibold text-center">SEGUIMIENTO DE CANDIDATOS</h2>
 
   <!-- Filtros -->
-  <div class="bg-[#D9D9D9] p-6 rounded-md shadow space-y-4 max-w-4xl mx-auto">
+  <form method="get" class="bg-[#D9D9D9] p-6 rounded-md shadow space-y-4 max-w-4xl mx-auto">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <!-- EC -->
       <div>
         <label class="block text-sm font-medium">Estandar Competencia:</label>
-        <select class="w-full mt-1 px-2 py-1 rounded bg-white border border-gray-300">
-          <option>Selecciona</option>
+        <select name="ec" onchange="this.form.submit()" class="w-full mt-1 px-2 py-1 rounded bg-white border border-gray-300">
+          <option value="">Sin Selección</option>
+          {% for ec in ecs %}
+            <option value="{{ ec.id }}" {% if selected.ec == ec.id|stringformat:'s' %}selected{% endif %}>
+              {{ ec.nombre }} ({{ ec.codigo }})
+            </option>
+          {% endfor %}
         </select>
       </div>
+
+      <!-- Proyecto (depende de EC) -->
       <div>
         <label class="block text-sm font-medium">Proyecto:</label>
-        <select class="w-full mt-1 px-2 py-1 rounded bg-white border border-gray-300">
-          <option>Selecciona</option>
+        <select name="proyecto" onchange="this.form.submit()" class="w-full mt-1 px-2 py-1 rounded bg-white border border-gray-300">
+          <option value="">Sin Selección</option>
+          {% for pr in proyectos %}
+            <option value="{{ pr.id }}" {% if selected.proyecto == pr.id|stringformat:'s' %}selected{% endif %}>
+              {{ pr.nombre }}
+            </option>
+          {% endfor %}
         </select>
       </div>
+
+      <!-- Grupo (depende de Proyecto / EC) -->
       <div>
         <label class="block text-sm font-medium">Grupo:</label>
-        <select class="w-full mt-1 px-2 py-1 rounded bg-white border border-gray-300">
-          <option>Selecciona</option>
+        <select name="grupo" onchange="this.form.submit()" class="w-full mt-1 px-2 py-1 rounded bg-white border border-gray-300">
+          <option value="">Sin Selección</option>
+          {% for gr in grupos %}
+            <option value="{{ gr.id }}" {% if selected.grupo == gr.id|stringformat:'s' %}selected{% endif %}>
+              {{ gr.nombre }}
+            </option>
+          {% endfor %}
         </select>
       </div>
+
+      <!-- Candidato (depende de Grupo / Proyecto / EC) -->
       <div>
         <label class="block text-sm font-medium">Candidato:</label>
-        <select class="w-full mt-1 px-2 py-1 rounded bg-white border border-gray-300">
-          <option>Selecciona</option>
+        <select name="candidato" onchange="this.form.submit()" class="w-full mt-1 px-2 py-1 rounded bg-white border border-gray-300">
+          <option value="">Sin Selección</option>
+          {% for c in candidatos %}
+            <option value="{{ c.id }}" {% if selected.candidato == c.id|stringformat:'s' %}selected{% endif %}>
+              {{ c.ap_paterno }} {{ c.ap_materno }} {{ c.nombre }}
+            </option>
+          {% endfor %}
         </select>
       </div>
     </div>
-  </div>
+  </form>
+
 
   <!-- Tabla -->
   <div class="overflow-x-auto bg-[#D9D9D9] rounded-md p-4 shadow max-w-7xl mx-auto">

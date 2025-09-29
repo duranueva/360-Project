@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from . import models
-from admn_panel.models import Usuario, EC, CeEc  # importa el modelo desde la app correspondiente
 from django.contrib import messages  # para mostrar mensajes opcionales
 from django.db import IntegrityError
 from django.db import transaction
+from django.db.models import Q
+from django.utils import timezone
+from . import models
+from admn_panel.models import Usuario, EC, CeEc  # importa el modelo desde la app correspondiente
 
 # Create your views here.
 @login_required
@@ -204,12 +206,12 @@ def seg_aux_cedula_evaluacion(request):
             messages.error(request, f"❌ No se encontró el proceso para el candidato.")
         messages.success(request, f"Cedula de Evaluación agregado correctamente")
 
+
+"""
 @login_required
 def seguimiento(request,debug=True):
-    """
-        https://chatgpt.com/share/68929281-4d54-800f-a451-01921c879339
-    """
     
+    # ---- Acciones de carga de archivos / correo (POST) ----
     if request.method == "POST":
         if request.FILES.get("ine"):
             seg_aux_ine(request)
@@ -238,50 +240,18 @@ def seguimiento(request,debug=True):
         
         return redirect("seguimiento")
 
-
+    # Obtenemos el Centro Evaluador actual
     id_usuario = request.user.id
     id_ce = Usuario.get_id_ce__from_actual_user(id_usuario)
-    if debug:
-        print("*************************")
-        print("*************************")
-        print("*************************")
-        print("id_ce ",id_ce)
-        print("*************************")
-        print("*************************")
-        print("*************************")
 
-    # Obtener proyectos del centro evaluador
+    # Obtener proyectos del Centro Evaluador
     proyectos = models.Proyecto.objects.filter(id_ce=id_ce)
-    if debug:
-        print("*************************")
-        print("*************************")
-        print("*************************")
-        print("proyectos ",proyectos)
-        print("*************************")
-        print("*************************")
-        print("*************************")
 
     # Obtener grupos relacionados a los proyectos
     grupos = models.Grupo.objects.filter(id_proyecto__in=proyectos)
-    if debug:
-        print("*************************")
-        print("*************************")
-        print("*************************")
-        print("grupos ",grupos)
-        print("*************************")
-        print("*************************")
-        print("*************************")
 
     # Obtener procesos que pertenezcan a esos grupos
     procesos = models.InfoProcesoCandidato.objects.filter(id_grupo__in=grupos)
-    if debug:
-        print("*************************")
-        print("*************************")
-        print("*************************")
-        print("procesos ",procesos)
-        print("*************************")
-        print("*************************")
-        print("*************************")
 
     # Obtener candidatos cuyos procesos están en los grupos anteriores
     data = []
@@ -293,6 +263,109 @@ def seguimiento(request,debug=True):
 
     return render(request, "seguimiento.html", {"candidatos_info": data})
 
+"""
+
+
+@login_required
+def seguimiento(request, debug=True):
+    # ---- Acciones de carga de archivos / correo (POST) ----
+    if request.method == "POST":
+        if request.FILES.get("ine"):
+            seg_aux_ine(request)
+        elif request.FILES.get("foto"):
+            seg_aux_foto(request)
+        elif request.FILES.get("curp"):
+            seg_aux_curp(request)
+        elif request.FILES.get("portada"):
+            seg_aux_portada(request)
+        elif request.FILES.get("indice"):
+            seg_aux_indice(request)
+        elif request.FILES.get("carta_recepcion_docs"):
+            seg_aux_carta_recepcion(request)
+        elif request.FILES.get("reporte_autenticidad"):
+            seg_aux_reporte_autenticidad(request)
+        elif request.FILES.get("triptico_derechos_img"):
+            seg_aux_triptico_derechos(request)
+        elif request.FILES.get("encuesta_satisfaccion"):
+            seg_aux_encuesta_satisfaccion(request)
+        elif request.FILES.get("cedula_evaluacion"):
+            seg_aux_cedula_evaluacion(request)
+        elif request.POST.get("correo"):
+            seg_aux_correo(request)
+
+        return redirect("seguimiento")
+
+    # ---- Parámetros de filtro (GET) ----
+    ec_id = request.GET.get("ec")            # id de EC
+    proyecto_id = request.GET.get("proyecto")
+    grupo_id = request.GET.get("grupo")
+    candidato_id = request.GET.get("candidato")
+
+    # ---- Ámbito del usuario (CE actual) ----
+    id_usuario = request.user.id
+    id_ce = Usuario.get_id_ce__from_actual_user(id_usuario)
+
+    # ---- Base: Proyectos del CE ----
+    proyectos_qs = models.Proyecto.objects.filter(id_ce=id_ce)
+
+    # EC disponibles (derivados de los proyectos del CE)
+    ecs_qs = EC.objects.filter(
+        pk__in=proyectos_qs.values_list("id_ec_id", flat=True)
+    ).order_by("nombre").distinct()
+
+    # Filtrar por EC si viene seleccionado
+    if ec_id:
+        proyectos_qs = proyectos_qs.filter(id_ec_id=ec_id)
+
+    # Grupos disponibles (derivados de los proyectos filtrados)
+    grupos_qs = models.Grupo.objects.filter(
+        id_proyecto__in=proyectos_qs.values_list("id", flat=True)
+    ).order_by("nombre")
+
+    # Filtrar por Proyecto si viene seleccionado
+    if proyecto_id:
+        grupos_qs = grupos_qs.filter(id_proyecto_id=proyecto_id)
+
+    # Procesos base (derivados de los grupos filtrados)
+    procesos_qs = models.InfoProcesoCandidato.objects.filter(
+        id_grupo__in=grupos_qs.values_list("id", flat=True)
+    ).select_related("id_candidato", "id_grupo")
+
+    # Filtros de Grupo y Candidato
+    if grupo_id:
+        procesos_qs = procesos_qs.filter(id_grupo_id=grupo_id)
+    if candidato_id:
+        procesos_qs = procesos_qs.filter(id_candidato_id=candidato_id)
+
+    # Candidatos disponibles (derivados de los procesos filtrados)
+    candidatos_qs = models.Candidato.objects.filter(
+        id__in=procesos_qs.values_list("id_candidato_id", flat=True)
+    ).order_by("ap_paterno", "ap_materno", "nombre").distinct()
+
+    # Data final para render
+    data = [
+        {"candidato": p.id_candidato, "proceso": p}
+        for p in procesos_qs
+    ]
+
+    context = {
+        "candidatos_info": data,
+
+        # para llenar selects
+        "ecs": ecs_qs,
+        "proyectos": proyectos_qs.order_by("nombre"),
+        "grupos": grupos_qs,
+        "candidatos": candidatos_qs,
+
+        # seleccionados (para marcar 'selected' en template)
+        "selected": {
+            "ec": str(ec_id) if ec_id else "",
+            "proyecto": str(proyecto_id) if proyecto_id else "",
+            "grupo": str(grupo_id) if grupo_id else "",
+            "candidato": str(candidato_id) if candidato_id else "",
+        },
+    }
+    return render(request, "seguimiento.html", context)
 
 
 
@@ -315,6 +388,9 @@ def proyectos(request):
                 messages.error(request, 'ID de Estandar de Competencia inválido.')
                 return redirect('proyectos')
 
+            created, message = CeEc.crear(id_ce=id_ce,id_ec=id_ec)
+            print(message)
+
             # Verificar si ya existe el proyecto
             proyecto, creado = models.Proyecto.objects.get_or_create(
                 nombre=nombre,
@@ -323,8 +399,6 @@ def proyectos(request):
             )
 
             if creado:
-                # Intentar crear CeEc solo si el proyecto es nuevo
-                success, ceec_msg = CeEc.crear(id_ce, id_ec)
                 messages.success(request, 'Proyecto agregado exitosamente.')
             else:
                 messages.error(request, '❌ El nombre asignado para el Proyecto ya existe con ese Estandar de Competencia. Escoge uno diferente.')
@@ -342,7 +416,6 @@ def proyectos(request):
         'ecs': ecs,
         'active_section': 'proyectos'
     })
-
 
 
 @login_required
@@ -497,7 +570,6 @@ def candidatos(request, grupo_id):
 """
 
 
-
 @login_required
 def candidato_n(request, candidato_id, debug=False):
     candidato = models.Candidato.objects.get(id=candidato_id)
@@ -545,12 +617,17 @@ def candidato_n(request, candidato_id, debug=False):
     })
 
 
+
+
 """
     Sección Equipo
 """
 @login_required
 def equipo(request):
     return render(request,"equipo.html")
+
+
+
 
 """
     Sección Créditos
