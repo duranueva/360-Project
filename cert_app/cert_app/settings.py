@@ -87,18 +87,20 @@ WSGI_APPLICATION = 'cert_app.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-"""'default': {
+"""
+'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'cert_app_v2',
+        'NAME': 'cert_app',
         'USER': 'postgres',
         'PASSWORD': '2612',
         'HOST': 'localhost',
         'PORT': '5432',  # Default PostgreSQL port
-    }"""
+    }
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'cert_app',
+        'NAME': 'cert_app_v2',
         'USER': 'postgres',
         'PASSWORD': '2612',
         'HOST': 'localhost',
