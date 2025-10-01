@@ -136,22 +136,48 @@
               </td>
             </tr>
 
-            <!-- INE -->
+            <!-- INE FRENTE -->
             <tr class="border-t border-gray-300 hover:bg-gray-200">
-              <td class="px-4 py-2">INE</td>
+              <td class="px-4 py-2">INE (Frente)</td>
               <td class="px-4 py-2">
-                {% if candidato.ine %} ✅ {% else %} ❌ {% endif %}
+                {% if candidato.ine_frente %} ✅ {% else %} ❌ {% endif %}
               </td>
               <td class="px-4 py-2">
                 {% comment %} <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
                   Agregar/Modificar
                 </a> {% endcomment %}
                 <a href="#" 
-                  onclick="abrirModalINE({{ candidato.id }})"
+                  onclick="abrirModalINE_frente({{ candidato.id }})"
                   class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
                   Agregar/Modificar
                 </a>
-                {% if candidato.ine %}
+                {% if candidato.ine_frente %}
+                  <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                    Ver
+                  </a>
+                  <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                    Descargar
+                  </a>
+                {% endif %}
+              </td>
+            </tr>
+
+            <!-- INE REVERSO -->
+            <tr class="border-t border-gray-300 hover:bg-gray-200">
+              <td class="px-4 py-2">INE (Reverso)</td>
+              <td class="px-4 py-2">
+                {% if candidato.ine_reverso %} ✅ {% else %} ❌ {% endif %}
+              </td>
+              <td class="px-4 py-2">
+                {% comment %} <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Agregar/Modificar
+                </a> {% endcomment %}
+                <a href="#" 
+                  onclick="abrirModalINE_reverso({{ candidato.id }})"
+                  class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Agregar/Modificar
+                </a>
+                {% if candidato.ine_reverso %}
                   <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
                     Ver
                   </a>
@@ -187,6 +213,30 @@
                 {% endif %}
               </td>
             </tr>
+
+            <!-- Firma -->
+            <tr class="border-t border-gray-300 hover:bg-gray-200">
+              <td class="px-4 py-2">Firma</td>
+              <td class="px-4 py-2">
+                {% if candidato.firma %} ✅ {% else %} ❌ {% endif %}
+              </td>
+              <td class="px-4 py-2">
+                <a href="#"
+                  onclick="abrirModalFIRMA({{ candidato.id }})"
+                  class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Agregar/Modificar
+                </a>
+                {% if candidato.firma %}
+                  <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                    Ver
+                  </a>
+                  <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                    Descargar
+                  </a>
+                {% endif %}
+              </td>
+            </tr>
+
 
             <!-- Portada (usando InfoProcesoCandidato) -->
             <tr class="border-t border-gray-300 hover:bg-gray-200">
@@ -381,19 +431,42 @@
   </div>
 </div>
 
-<!-- Modal INE -->
-<div id="modalINE" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+<!-- Modal INE  FRENTE-->
+<div id="modalINE_frente" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
   <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
-    <h2 class="text-xl font-semibold text-center mb-4">Subir INE</h2>
+    <h2 class="text-xl font-semibold text-center mb-4">Subir INE (Frente)</h2>
     <form id="formINE" method="POST" enctype="multipart/form-data" class="space-y-4">
       {% csrf_token %}
       <div>
         <label class="block text-sm font-medium mb-1">Archivo INE:</label>
-        <input type="file" name="ine" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+        <input type="file" name="ine_frente" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
       </div>
       <input type="hidden" name="candidato_id" id="candidatoIdINE">
       <div class="flex justify-end gap-4">
-        <button type="button" onclick="cerrarModalINE()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+        <button type="button" onclick="cerrarModalINE_frente()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal INE  REVERSO-->
+<div id="modalINE_reverso" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Subir INE (Reverso)</h2>
+    <form id="formINE_reverso" method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Archivo INE:</label>
+        <input type="file" name="ine_reverso" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <input type="hidden" name="candidato_id" id="candidatoIdINE_reverso">
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalINE_reverso()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
           Cancelar
         </button>
         <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
@@ -426,6 +499,30 @@
     </form>
   </div>
 </div>
+
+<!-- Modal FIRMA -->
+<div id="modalFIRMA" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Subir Firma</h2>
+    <form id="formFIRMA" method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Archivo Firma:</label>
+        <input type="file" name="firma" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <input type="hidden" name="candidato_id" id="candidatoIdFIRMA">
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalFIRMA()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 
 <!-- Modal CURP -->
 <div id="modalCURP" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
@@ -637,13 +734,22 @@
 
 
 <script>
-function abrirModalINE(candidatoId) {
-  document.getElementById('modalINE').classList.remove('hidden');
+function abrirModalINE_frente(candidatoId) {
+  document.getElementById('modalINE_frente').classList.remove('hidden');
   document.getElementById('candidatoIdINE').value = candidatoId;
 }
 
-function cerrarModalINE() {
-  document.getElementById('modalINE').classList.add('hidden');
+function cerrarModalINE_frente() {
+  document.getElementById('modalINE_frente').classList.add('hidden');
+}
+
+function abrirModalINE_reverso(candidatoId) {
+  document.getElementById('modalINE_reverso').classList.remove('hidden');
+  document.getElementById('candidatoIdINE_reverso').value = candidatoId;
+}
+
+function cerrarModalINE_reverso() {
+  document.getElementById('modalINE_reverso').classList.add('hidden');
 }
 
 function abrirModalFOTO(candidatoId) {
@@ -653,6 +759,14 @@ function abrirModalFOTO(candidatoId) {
 
 function cerrarModalFOTO() {
   document.getElementById('modalFOTO').classList.add('hidden');
+}
+
+function abrirModalFIRMA(candidatoId) {
+  document.getElementById('modalFIRMA').classList.remove('hidden');
+  document.getElementById('candidatoIdFIRMA').value = candidatoId;
+}
+function cerrarModalFIRMA() {
+  document.getElementById('modalFIRMA').classList.add('hidden');
 }
 
 function abrirModalCURP(candidatoId) {

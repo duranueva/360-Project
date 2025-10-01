@@ -17,8 +17,8 @@ def base_doc(request):
 """
     Sección Seguimiento
 """
-def seg_aux_ine(request):
-    ine_file = request.FILES.get("ine")
+def seg_aux_ine_frente(request):
+    ine_file = request.FILES.get("ine_frente")
     candidato_id = request.POST.get("candidato_id")
     print(">> INE FILE:", ine_file)
     print(">> CANDIDATO ID:", candidato_id)
@@ -27,9 +27,23 @@ def seg_aux_ine(request):
             print("❌ Archivo no válido para campo binario: INE")
             messages.error(request, f"❌ Archivo no válido para campo binario: INE")
         candidato = models.Candidato.objects.get(id=candidato_id)
-        candidato.ine = ine_file.read()
+        candidato.ine_frente = ine_file.read()
         candidato.save()
-        messages.success(request, f"INE agregado correctamente")
+        messages.success(request, f"INE (Frente) agregado correctamente")
+
+def seg_aux_ine_reverso(request):
+    ine_file = request.FILES.get("ine_reverso")
+    candidato_id = request.POST.get("candidato_id")
+    print(">> INE FILE:___  ", ine_file)
+    print(">> CANDIDATO ID:____  ", type(candidato_id), "|",candidato_id,"|")
+    if ine_file and candidato_id:
+        if ine_file.content_type.startswith("text"):
+            print("❌ Archivo no válido para campo binario: INE")
+            messages.error(request, f"❌ Archivo no válido para campo binario: INE")
+        candidato = models.Candidato.objects.get(id=candidato_id)
+        candidato.ine_reverso = ine_file.read()
+        candidato.save()
+        messages.success(request, f"INE (Reverso) agregado correctamente")
 
 def seg_aux_foto(request):
     foto_file = request.FILES.get("foto")
@@ -206,6 +220,19 @@ def seg_aux_cedula_evaluacion(request):
             messages.error(request, f"❌ No se encontró el proceso para el candidato.")
         messages.success(request, f"Cedula de Evaluación agregado correctamente")
 
+def seg_aux_firma(request):
+    firma_file = request.FILES.get("firma")
+    candidato_id = request.POST.get("candidato_id")
+    print(">> FIRMA FILE:", firma_file)
+    print(">> CANDIDATO ID:", candidato_id)
+    if firma_file and candidato_id:
+        if firma_file.content_type.startswith("text"):
+            print("❌ Archivo no válido para campo binario: FIRMA")
+            messages.error(request, "❌ Archivo no válido para campo binario: FIRMA")
+        candidato = models.Candidato.objects.get(id=candidato_id)
+        candidato.firma = firma_file.read()
+        candidato.save()
+        messages.success(request, "Firma agregada correctamente")
 
 """
 @login_required
@@ -270,10 +297,14 @@ def seguimiento(request,debug=True):
 def seguimiento(request, debug=True):
     # ---- Acciones de carga de archivos / correo (POST) ----
     if request.method == "POST":
-        if request.FILES.get("ine"):
-            seg_aux_ine(request)
+        if request.FILES.get("ine_frente"):
+            seg_aux_ine_frente(request)
+        elif request.FILES.get("ine_reverso"):
+            seg_aux_ine_reverso(request)
         elif request.FILES.get("foto"):
             seg_aux_foto(request)
+        elif request.FILES.get("firma"):
+            seg_aux_firma(request)
         elif request.FILES.get("curp"):
             seg_aux_curp(request)
         elif request.FILES.get("portada"):
