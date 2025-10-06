@@ -262,32 +262,6 @@
             </tr>
 
 
-            <!-- Indice (usando InfoProcesoCandidato) -->
-            <tr class="border-t border-gray-300 hover:bg-gray-200">
-              <td class="px-4 py-2">Indice</td>
-              <td class="px-4 py-2">
-                {% if proceso and proceso.indice %} ✅ {% else %} ❌ {% endif %}
-              </td>
-              <td class="px-4 py-2">
-                {% comment %} <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
-                  Agregar/Modificar
-                </a> {% endcomment %}
-                <a href="#"
-                  onclick="abrirModalINDICE({{ candidato.id }})"
-                  class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
-                  Agregar/Modificar
-                </a>
-                {% if proceso and proceso.indice %}
-                  <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
-                    Ver
-                  </a>
-                  <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
-                    Descargar
-                  </a>
-                {% endif %}
-              </td>
-            </tr>
-            
 
             <!-- Carta Recepción Documentos (usando InfoProcesoCandidato) -->
             <tr class="border-t border-gray-300 hover:bg-gray-200">
@@ -331,32 +305,6 @@
                   Agregar/Modificar
                 </a>
                 {% if proceso and proceso.reporte_autenticidad %}
-                  <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
-                    Ver
-                  </a>
-                  <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
-                    Descargar
-                  </a>
-                {% endif %}
-              </td>
-            </tr>
-
-            <!-- Triptico de Derechos (usando InfoProcesoCandidato) -->
-            <tr class="border-t border-gray-300 hover:bg-gray-200">
-              <td class="px-4 py-2">Triptico de Derechos</td>
-              <td class="px-4 py-2">
-                {% if proceso and proceso.triptico_derechos_img %} ✅ {% else %} ❌ {% endif %}
-              </td>
-              <td class="px-4 py-2">
-                {% comment %} <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
-                  Agregar/Modificar
-                </a> {% endcomment %}
-                <a href="#"
-                  onclick="abrirModalTRIPTICO({{ candidato.id }})"
-                  class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
-                  Agregar/Modificar
-                </a>
-                {% if proceso and proceso.triptico_derechos_img %}
                   <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
                     Ver
                   </a>
@@ -419,6 +367,101 @@
               </td>
             </tr>
 
+            <!-- Ficha de Registro (usando InfoProcesoCandidato) -->
+            <tr class="border-t border-gray-300 hover:bg-gray-200">
+              <td class="px-4 py-2">Ficha de Registro</td>
+              <td class="px-4 py-2">
+                {% if proceso and proceso.ficha_registro %} ✅ {% else %} ❌ {% endif %}
+              </td>
+              <td class="px-4 py-2">
+                <a href="#"
+                  onclick="abrirModalFICHA({{ candidato.id }})"
+                  class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Agregar/Modificar
+                </a>
+                {% if proceso and proceso.ficha_registro %}
+                  <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                    Ver
+                  </a>
+                  <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                    Descargar
+                  </a>
+                {% endif %}
+              </td>
+            </tr>
+
+            <!-- Instrumento de Evaluación (InfoProcesoCandidato) -->
+            <tr class="border-t border-gray-300 hover:bg-gray-200">
+              <td class="px-4 py-2">Instrumento de Evaluación</td>
+              <td class="px-4 py-2">
+                {% if proceso and proceso.instrumento_de_evaluacion %} ✅ {% else %} ❌ {% endif %}
+              </td>
+              <td class="px-4 py-2">
+                <a href="#"
+                  onclick="abrirModalINSTRUMENTO({{ candidato.id }})"
+                  class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Agregar/Modificar
+                </a>
+                {% if proceso and proceso.instrumento_de_evaluacion %}
+                  <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                    Ver
+                  </a>
+                  <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                    Descargar
+                  </a>
+                {% endif %}
+              </td>
+            </tr>
+
+            <!-- Plan de Evaluación (InfoProcesoCandidato) -->
+            <tr class="border-t border-gray-300 hover:bg-gray-200">
+              <td class="px-4 py-2">Plan de Evaluación</td>
+              <td class="px-4 py-2">
+                {% if proceso and proceso.plan_evaluacion %} ✅ {% else %} ❌ {% endif %}
+              </td>
+              <td class="px-4 py-2">
+                <a href="#"
+                  onclick="abrirModalPLAN({{ candidato.id }})"
+                  class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Agregar/Modificar
+                </a>
+                {% if proceso and proceso.plan_evaluacion %}
+                  <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                    Ver
+                  </a>
+                  <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                    Descargar
+                  </a>
+                {% endif %}
+              </td>
+            </tr>
+
+
+            <!-- Portafolio (usando InfoProcesoCandidato) -->
+            <tr class="border-t border-gray-300 hover:bg-gray-200">
+              <td class="px-4 py-2">Portafolio</td>
+              <td class="px-4 py-2">
+                {% if proceso and proceso.portafolio %} ✅ {% else %} ❌ {% endif %}
+              </td>
+              <td class="px-4 py-2">
+                <a href="#"
+                  onclick="abrirModalPORTAFOLIO({{ candidato.id }})"
+                  class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                  Agregar/Modificar
+                </a>
+                {% if proceso and proceso.portafolio %}
+                  <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                    Ver
+                  </a>
+                  <a class="w-[120px] py-2 bg-[#D9D9D9] hover:bg-[#F5F5F5] flex items-center justify-center rounded-md border border-gray-400 text-center inline-block">
+                    Descargar
+                  </a>
+                {% endif %}
+              </td>
+            </tr>
+
+
+
           {% endwith %}
         {% empty %}
           <tr>
@@ -430,6 +473,104 @@
     </table>
   </div>
 </div>
+
+
+
+<!-- Modal PLAN DE EVALUACIÓN -->
+<div id="modalPLAN" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Subir Plan de Evaluación</h2>
+    <form id="formPLAN" method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Archivo:</label>
+        <input type="file" name="plan_evaluacion" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <input type="hidden" name="candidato_id" id="candidatoIdPLAN">
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalPLAN()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- Modal INSTRUMENTO DE EVALUACIÓN -->
+<div id="modalINSTRUMENTO" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Subir Instrumento de Evaluación</h2>
+    <form id="formINSTRUMENTO" method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Archivo:</label>
+        <input type="file" name="instrumento_de_evaluacion" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <input type="hidden" name="candidato_id" id="candidatoIdINSTRUMENTO">
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalINSTRUMENTO()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- Modal PORTAFOLIO -->
+<div id="modalPORTAFOLIO" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Subir Portafolio</h2>
+    <form id="formPORTAFOLIO" method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Archivo:</label>
+        <input type="file" name="portafolio" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <input type="hidden" name="candidato_id" id="candidatoIdPORTAFOLIO">
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalPORTAFOLIO()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- Modal FICHA DE REGISTRO -->
+<div id="modalFICHA" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
+    <h2 class="text-xl font-semibold text-center mb-4">Subir Ficha de Registro</h2>
+    <form id="formFICHA" method="POST" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium mb-1">Archivo:</label>
+        <input type="file" name="ficha_registro" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
+      </div>
+      <input type="hidden" name="candidato_id" id="candidatoIdFICHA">
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="cerrarModalFICHA()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
+          Cancelar
+        </button>
+        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 
 <!-- Modal INE  FRENTE-->
 <div id="modalINE_frente" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
@@ -662,29 +803,6 @@
   </div>
 </div>
 
-<!-- Modal TRIPTICO DERECHOS -->
-<div id="modalTRIPTICO" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
-  <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
-    <h2 class="text-xl font-semibold text-center mb-4">Subir Tríptico de Derechos</h2>
-    <form id="formTRIPTICO" method="POST" enctype="multipart/form-data" class="space-y-4">
-      {% csrf_token %}
-      <div>
-        <label class="block text-sm font-medium mb-1">Archivo Tríptico:</label>
-        <input type="file" name="triptico_derechos_img" required class="w-full px-3 py-2 rounded bg-white border border-gray-300">
-      </div>
-      <input type="hidden" name="candidato_id" id="candidatoIdTRIPTICO">
-      <div class="flex justify-end gap-4">
-        <button type="button" onclick="cerrarModalTRIPTICO()" class="w-[120px] py-2 bg-[#F5F5F5] hover:bg-gray-300 rounded-md border border-gray-400 text-center">
-          Cancelar
-        </button>
-        <button type="submit" class="w-[120px] py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-center">
-          Guardar
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
-
 <!-- Modal ENCUESTA SATISFACCION -->
 <div id="modalENCUESTA" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
   <div class="bg-[#D9D9D9] p-6 rounded-md shadow max-w-md w-full border border-gray-400">
@@ -734,6 +852,40 @@
 
 
 <script>
+function abrirModalPLAN(candidatoId) {
+  document.getElementById('modalPLAN').classList.remove('hidden');
+  document.getElementById('candidatoIdPLAN').value = candidatoId;
+}
+
+function cerrarModalPLAN() {
+  document.getElementById('modalPLAN').classList.add('hidden');
+}
+
+function abrirModalINSTRUMENTO(candidatoId) {
+  document.getElementById('modalINSTRUMENTO').classList.remove('hidden');
+  document.getElementById('candidatoIdINSTRUMENTO').value = candidatoId;
+}
+
+function cerrarModalINSTRUMENTO() {
+  document.getElementById('modalINSTRUMENTO').classList.add('hidden');
+}
+
+function abrirModalPORTAFOLIO(candidatoId) {
+  document.getElementById('modalPORTAFOLIO').classList.remove('hidden');
+  document.getElementById('candidatoIdPORTAFOLIO').value = candidatoId;
+}
+function cerrarModalPORTAFOLIO() {
+  document.getElementById('modalPORTAFOLIO').classList.add('hidden');
+}
+
+function abrirModalFICHA(candidatoId) {
+  document.getElementById('modalFICHA').classList.remove('hidden');
+  document.getElementById('candidatoIdFICHA').value = candidatoId;
+}
+function cerrarModalFICHA() {
+  document.getElementById('modalFICHA').classList.add('hidden');
+}
+
 function abrirModalINE_frente(candidatoId) {
   document.getElementById('modalINE_frente').classList.remove('hidden');
   document.getElementById('candidatoIdINE').value = candidatoId;
@@ -822,15 +974,6 @@ function abrirModalREPORTE(candidatoId) {
 
 function cerrarModalREPORTE() {
   document.getElementById('modalREPORTE').classList.add('hidden');
-}
-
-function abrirModalTRIPTICO(candidatoId) {
-  document.getElementById('modalTRIPTICO').classList.remove('hidden');
-  document.getElementById('candidatoIdTRIPTICO').value = candidatoId;
-}
-
-function cerrarModalTRIPTICO() {
-  document.getElementById('modalTRIPTICO').classList.add('hidden');
 }
 
 function abrirModalENCUESTA(candidatoId) {

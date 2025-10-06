@@ -234,63 +234,83 @@ def seg_aux_firma(request):
         candidato.save()
         messages.success(request, "Firma agregada correctamente")
 
-"""
-@login_required
-def seguimiento(request,debug=True):
-    
-    # ---- Acciones de carga de archivos / correo (POST) ----
-    if request.method == "POST":
-        if request.FILES.get("ine"):
-            seg_aux_ine(request)
-        elif request.FILES.get("foto"):
-            seg_aux_foto(request)
-        elif request.FILES.get("curp"):
-            seg_aux_curp(request)
-        elif request.FILES.get("portada"):
-            seg_aux_portada(request)
-        elif request.FILES.get("indice"):
-            seg_aux_indice(request)
-        elif request.FILES.get("carta_recepcion_docs"):
-            seg_aux_carta_recepcion(request)
-        elif request.FILES.get("reporte_autenticidad"):
-            seg_aux_reporte_autenticidad(request)
-        elif request.FILES.get("triptico_derechos_img"):
-            seg_aux_triptico_derechos(request)
-        elif request.FILES.get("encuesta_satisfaccion"):
-            seg_aux_encuesta_satisfaccion(request)
-        elif request.FILES.get("cedula_evaluacion"):
-            seg_aux_cedula_evaluacion(request)
+def seg_aux_ficha_registro(request):
+    archivo = request.FILES.get("ficha_registro")
+    candidato_id = request.POST.get("candidato_id")
 
-        elif request.POST.get("correo"):
-            seg_aux_correo(request)
-        
-        
-        return redirect("seguimiento")
+    if archivo and candidato_id:
+        if archivo.content_type.startswith("text"):
+            messages.error(request, "❌ Archivo no válido para campo binario: FICHA DE REGISTRO")
+            return
 
-    # Obtenemos el Centro Evaluador actual
-    id_usuario = request.user.id
-    id_ce = Usuario.get_id_ce__from_actual_user(id_usuario)
+        try:
+            proceso = models.InfoProcesoCandidato.objects.get(id_candidato_id=candidato_id)
+        except models.InfoProcesoCandidato.DoesNotExist:
+            messages.error(request, "❌ Proceso no encontrado.")
+            return
 
-    # Obtener proyectos del Centro Evaluador
-    proyectos = models.Proyecto.objects.filter(id_ce=id_ce)
+        proceso.ficha_registro = archivo.read()
+        proceso.save()
+        messages.success(request, "Ficha de Registro agregada correctamente")
 
-    # Obtener grupos relacionados a los proyectos
-    grupos = models.Grupo.objects.filter(id_proyecto__in=proyectos)
+def seg_aux_portafolio(request):
+    archivo = request.FILES.get("portafolio")
+    candidato_id = request.POST.get("candidato_id")
 
-    # Obtener procesos que pertenezcan a esos grupos
-    procesos = models.InfoProcesoCandidato.objects.filter(id_grupo__in=grupos)
+    if archivo and candidato_id:
+        if archivo.content_type.startswith("text"):
+            messages.error(request, "❌ Archivo no válido para campo binario: PORTAFOLIO")
+            return
 
-    # Obtener candidatos cuyos procesos están en los grupos anteriores
-    data = []
-    for proceso in procesos:
-        data.append({
-            "candidato": proceso.id_candidato,
-            "proceso": proceso
-        })
+        try:
+            proceso = models.InfoProcesoCandidato.objects.get(id_candidato_id=candidato_id)
+        except models.InfoProcesoCandidato.DoesNotExist:
+            messages.error(request, "❌ Proceso no encontrado.")
+            return
 
-    return render(request, "seguimiento.html", {"candidatos_info": data})
+        proceso.portafolio = archivo.read()
+        proceso.save()
+        messages.success(request, "Portafolio agregado correctamente")
 
-"""
+def seg_aux_instrumento_de_evaluacion(request):
+    archivo = request.FILES.get("instrumento_de_evaluacion")
+    candidato_id = request.POST.get("candidato_id")
+
+    if archivo and candidato_id:
+        # Simple guard: avoid saving plain text to a BYTEA
+        if archivo.content_type.startswith("text"):
+            messages.error(request, "❌ Archivo no válido para campo binario: INSTRUMENTO DE EVALUACIÓN")
+            return
+
+        try:
+            proceso = models.InfoProcesoCandidato.objects.get(id_candidato_id=candidato_id)
+        except models.InfoProcesoCandidato.DoesNotExist:
+            messages.error(request, "❌ Proceso no encontrado.")
+            return
+
+        proceso.instrumento_de_evaluacion = archivo.read()
+        proceso.save()
+        messages.success(request, "Instrumento de Evaluación agregado correctamente")
+
+def seg_aux_plan_evaluacion(request):
+    archivo = request.FILES.get("plan_evaluacion")
+    candidato_id = request.POST.get("candidato_id")
+
+    if archivo and candidato_id:
+        # Guard: evita guardar texto plano en BYTEA
+        if archivo.content_type.startswith("text"):
+            messages.error(request, "❌ Archivo no válido para campo binario: PLAN DE EVALUACIÓN")
+            return
+
+        try:
+            proceso = models.InfoProcesoCandidato.objects.get(id_candidato_id=candidato_id)
+        except models.InfoProcesoCandidato.DoesNotExist:
+            messages.error(request, "❌ Proceso no encontrado.")
+            return
+
+        proceso.plan_evaluacion = archivo.read()
+        proceso.save()
+        messages.success(request, "Plan de Evaluación agregado correctamente")
 
 
 @login_required
@@ -301,6 +321,14 @@ def seguimiento(request, debug=True):
             seg_aux_ine_frente(request)
         elif request.FILES.get("ine_reverso"):
             seg_aux_ine_reverso(request)
+        elif request.FILES.get("plan_evaluacion"):
+            seg_aux_plan_evaluacion(request)
+        elif request.FILES.get("ficha_registro"):
+            seg_aux_ficha_registro(request)
+        elif request.FILES.get("instrumento_de_evaluacion"):
+            seg_aux_instrumento_de_evaluacion(request)
+        elif request.FILES.get("portafolio"):
+            seg_aux_portafolio(request)
         elif request.FILES.get("foto"):
             seg_aux_foto(request)
         elif request.FILES.get("firma"):
@@ -309,14 +337,10 @@ def seguimiento(request, debug=True):
             seg_aux_curp(request)
         elif request.FILES.get("portada"):
             seg_aux_portada(request)
-        elif request.FILES.get("indice"):
-            seg_aux_indice(request)
         elif request.FILES.get("carta_recepcion_docs"):
             seg_aux_carta_recepcion(request)
         elif request.FILES.get("reporte_autenticidad"):
             seg_aux_reporte_autenticidad(request)
-        elif request.FILES.get("triptico_derechos_img"):
-            seg_aux_triptico_derechos(request)
         elif request.FILES.get("encuesta_satisfaccion"):
             seg_aux_encuesta_satisfaccion(request)
         elif request.FILES.get("cedula_evaluacion"):
