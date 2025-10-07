@@ -548,83 +548,7 @@ def candidatos(request, grupo_id):
         "active_section": "proyectos"
     })
 
-
 """
-@login_required
-def candidatos(request, grupo_id):
-    grupo = models.Grupo.objects.get(id=grupo_id)
-
-    # Obtener procesos que pertenecen al grupo
-    procesos = models.InfoProcesoCandidato.objects.filter(id_grupo=grupo)
-
-    if request.method == 'POST':
-        nombre  = (request.POST.get('nombre') or '').strip()
-        ap_p    = (request.POST.get('apellido_paterno') or '').strip()
-        ap_m    = (request.POST.get('apellido_materno') or '').strip()
-
-        if not (nombre and ap_p and ap_m):
-            messages.error(request, "Por favor llena todos los campos.")
-            return redirect('candidatos', grupo_id=grupo.id)
-        else:
-            candidato = models.Candidato.objects.filter(
-                nombre__iexact=nombre,
-                ap_paterno__iexact=ap_p,
-                ap_materno__iexact=ap_m
-            ).first()
-
-            if candidato:
-                # ¿Ya está ligado este candidato al grupo?
-                ya_asignado = models.InfoProcesoCandidato.objects.filter(
-                    id_grupo=grupo,
-                    id_candidato=candidato
-                ).exists()
-
-                
-                print("************")
-                print("************")
-                print("************")
-                print("************")
-                print(candidato)
-                print(ya_asignado)
-                print("************")
-                print("************")
-                print("************")
-                print("************")
-
-                if ya_asignado:
-                    messages.error(request, f"❌ El candidato {nombre} {ap_p} {ap_m} ya está en este grupo.")
-                    return redirect('candidatos', grupo_id=grupo.id)
-            
-            # Si no existe el candidato ligado al Grupo, lo creamos
-            nuevo_candidato = models.Candidato.objects.create(
-                nombre=nombre,
-                ap_paterno=ap_p,
-                ap_materno=ap_m
-            )
-            models.InfoProcesoCandidato.objects.create(
-                id_grupo=grupo,
-                id_candidato=nuevo_candidato
-            )
-            messages.success(request, f"Candidato '{nombre} {ap_p} {ap_m}' agregado exitosamente.")
-            return redirect('candidatos', grupo_id=grupo.id)
-
-    # Construir la data de candidatos con su proceso
-    data = []
-    for proceso in procesos:
-        data.append({
-            "candidato": proceso.id_candidato,
-            "proceso": proceso
-        })
-
-    return render(request, "candidatos.html", {
-        "candidatos_info": data,
-        "grupo": grupo,
-        "active_section": "proyectos"
-    })
-
-"""
-
-
 @login_required
 def candidato_n(request, candidato_id, debug=False):
     candidato = models.Candidato.objects.get(id=candidato_id)
@@ -670,6 +594,75 @@ def candidato_n(request, candidato_id, debug=False):
         "proceso": proceso,
         "active_section": "proyectos"
     })
+
+"""
+
+# views.py
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.decorators import login_required
+from . import models
+
+@login_required
+def candidato_n(request, candidato_id):
+    candidato = get_object_or_404(models.Candidato, id=candidato_id)
+
+    # --- POST: reuse the same dispatcher you already use in `seguimiento`
+    if request.method == "POST":
+        if request.FILES.get("ine_frente"):
+            seg_aux_ine_frente(request)
+        elif request.FILES.get("ine_reverso"):
+            seg_aux_ine_reverso(request)
+        elif request.FILES.get("plan_evaluacion"):
+            seg_aux_plan_evaluacion(request)
+        elif request.FILES.get("ficha_registro"):
+            seg_aux_ficha_registro(request)
+        elif request.FILES.get("instrumento_de_evaluacion"):
+            seg_aux_instrumento_de_evaluacion(request)
+        elif request.FILES.get("portafolio"):
+            seg_aux_portafolio(request)
+        elif request.FILES.get("foto"):
+            seg_aux_foto(request)
+        elif request.FILES.get("firma"):
+            seg_aux_firma(request)
+        elif request.FILES.get("curp"):
+            seg_aux_curp(request)
+        elif request.FILES.get("portada"):
+            seg_aux_portada(request)
+        elif request.FILES.get("indice"):
+            seg_aux_indice(request)
+        elif request.FILES.get("carta_recepcion_docs"):
+            seg_aux_carta_recepcion(request)
+        elif request.FILES.get("reporte_autenticidad"):
+            seg_aux_reporte_autenticidad(request)
+        elif request.FILES.get("encuesta_satisfaccion"):
+            seg_aux_encuesta_satisfaccion(request)
+        elif request.FILES.get("cedula_evaluacion"):
+            seg_aux_cedula_evaluacion(request)
+        elif request.POST.get("correo"):
+            seg_aux_correo(request)
+
+        # IMPORTANT: stay on the same candidate page
+        return redirect("candidato_n", candidato_id=candidato_id)
+
+    # --- GET: pick the most recent proceso (prevents MultipleObjectsReturned)
+    proceso = (
+        models.InfoProcesoCandidato.objects
+        .filter(id_candidato=candidato)
+        .select_related(
+            "id_grupo",
+            "id_grupo__id_proyecto",
+            "id_grupo__id_proyecto__id_ec",
+        )
+        .order_by("-fecha_creacion", "-id")
+        .first()
+    )
+
+    return render(
+        request,
+        "candidato_n.html",
+        {"candidato": candidato, "proceso": proceso, "active_section": "proyectos"},
+    )
+
 
 
 
